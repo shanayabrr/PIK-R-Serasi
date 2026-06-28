@@ -1,0 +1,70 @@
+/* Custom Styles for PIK-R SERASI Portal */
+
+/* 1. Definisi Font Custom jika diperlukan */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #4f46e5; /* Indigo 600 */
+    --secondary-color: #10b981; /* Emerald 500 */
+}
+
+/* Update Navbar agar menempel di atas */
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 1000; /* Agar berada di atas konten lain */
+    background-color: #4f46e5; /* Sesuaikan dengan warna tema Anda */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    scroll-behavior: smooth;
+}
+
+/* 2. Custom Scrollbar untuk tampilan lebih modern */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c7d2fe;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a5b4fc;
+}
+
+/* 3. Animasi Fade-In untuk Transisi Halaman */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 4. Utility untuk Tabel di Dashboard Admin/Konselor agar Responsif */
+.table-container {
+    overflow-x: auto;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* 5. Badge Status Konseling */
+.badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-scheduled { background-color: #dbeafe; color: #1e40af; }
+.badge-completed { background-color: #dcfce7; color: #166534; }
+.badge-canceled { background-color: #fee2e2; color: #991b1b; }

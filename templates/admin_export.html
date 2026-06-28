@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-6 fade-in">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 pb-4 border-b border-slate-100 gap-4">
+        <div>
+            <h2 class="text-3xl font-black text-slate-800 tracking-tighter">Unduh Database & Laporan</h2>
+            <p class="text-slate-400 font-bold uppercase tracking-widest text-[10px] mt-1">Halaman khusus Administrator PIK-R SERASI</p>
+        </div>
+        <a href="{{ url_for('dashboard') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm">
+            ← Kembali ke Dashboard
+        </a>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Left Panel: Instructions & Raw Backup -->
+        <div class="space-y-6">
+            <!-- Instruction Card -->
+            <div class="premium-card p-6 rounded-[2rem] bg-white border border-slate-100">
+                <div class="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center text-xl mb-4">💡</div>
+                <h3 class="text-lg font-black text-slate-800 tracking-tight">Petunjuk Pelaporan</h3>
+                <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                    Pilih tabel data yang ingin diekspor pada panel kanan, pilih format file yang diinginkan (Excel atau CSV), lalu klik tombol unduh.
+                </p>
+                <div class="mt-4 p-3.5 bg-[#f7ede0]/55 border border-[#e8d7c3] rounded-2xl text-[11px] text-[#8b6e50] leading-relaxed">
+                    <strong>Penting:</strong> Data kata sandi (password) pengguna disembunyikan dalam berkas ekspor demi keamanan privasi.
+                </div>
+            </div>
+
+            <!-- Raw Backup Card -->
+            <div class="premium-card p-6 rounded-[2rem] bg-[#fbf4e6] border border-[#e8d7c3] relative overflow-hidden group">
+                <div class="absolute -right-6 -bottom-6 text-7xl opacity-5 font-black pointer-events-none select-none">💾</div>
+                <div class="z-10 relative">
+                    <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-xl mb-4 shadow-sm">💾</div>
+                    <h3 class="text-lg font-black text-slate-800 tracking-tight">Pencadangan Sistem</h3>
+                    <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                        Unduh salinan mentah file database SQLite (`pikr.db`). Berguna untuk backup berkala offline.
+                    </p>
+                    <a href="{{ url_for('admin_export_backup') }}" id="btn-raw-backup" class="inline-flex items-center justify-center gap-2 w-full mt-6 bg-slate-800 hover:bg-slate-900 text-white py-3.5 px-6 rounded-2xl font-black uppercase tracking-wider text-[11px] transition-all shadow-md active:scale-95">
+                        📥 Unduh Backup Mentah (.db)
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Export Options -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="premium-card p-8 rounded-[2.5rem] bg-white border border-slate-100">
+                <h3 class="text-xl font-black text-slate-800 tracking-tighter">Ekspor Laporan Spreadsheet</h3>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1 mb-6">Pilih jenis data dan format berkas</p>
+
+                <form action="{{ url_for('admin_export_download') }}" method="GET" class="space-y-6">
+                    <!-- Table Selector Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        
+                        <!-- Users Option -->
+                        <label class="relative flex items-start p-4 rounded-2xl border border-slate-100 hover:border-amber-300 hover:bg-[#f7ede0]/30 cursor-pointer transition-all group">
+                            <input type="radio" name="table" value="users" checked class="mt-1 accent-[#8b6e50] focus:ring-[#8b6e50]" id="radio-users">
+                            <div class="ml-3">
+                                <span class="block text-xs font-black text-slate-800 uppercase tracking-wide">Data Pengguna</span>
+                                <span class="block text-[11px] text-slate-400 mt-1">Daftar akun, tanggal lahir, role, dan akumulasi poin.</span>
+                            </div>
+                        </label>
+
+                        <!-- Sessions Option -->
+                        <label class="relative flex items-start p-4 rounded-2xl border border-slate-100 hover:border-amber-300 hover:bg-[#f7ede0]/30 cursor-pointer transition-all group">
+                            <input type="radio" name="table" value="sessions" class="mt-1 accent-[#8b6e50] focus:ring-[#8b6e50]" id="radio-sessions">
+                            <div class="ml-3">
+                                <span class="block text-xs font-black text-slate-800 uppercase tracking-wide">Sesi Konseling</span>
+                                <span class="block text-[11px] text-slate-400 mt-1">Detail pendaftaran konseling, topik, dan status persetujuan.</span>
+                            </div>
+                        </label>
+
+                        <!-- Events Option -->
+                        <label class="relative flex items-start p-4 rounded-2xl border border-slate-100 hover:border-amber-300 hover:bg-[#f7ede0]/30 cursor-pointer transition-all group">
+                            <input type="radio" name="table" value="events" class="mt-1 accent-[#8b6e50] focus:ring-[#8b6e50]" id="radio-events">
+                            <div class="ml-3">
+                                <span class="block text-xs font-black text-slate-800 uppercase tracking-wide">Kegiatan / Events</span>
+                                <span class="block text-[11px] text-slate-400 mt-1">Data event/kegiatan terbit serta jumlah peserta terdaftar.</span>
+                            </div>
+                        </label>
+
+                        <!-- Forum Option -->
+                        <label class="relative flex items-start p-4 rounded-2xl border border-slate-100 hover:border-amber-300 hover:bg-[#f7ede0]/30 cursor-pointer transition-all group">
+                            <input type="radio" name="table" value="forum_posts" class="mt-1 accent-[#8b6e50] focus:ring-[#8b6e50]" id="radio-forum">
+                            <div class="ml-3">
+                                <span class="block text-xs font-black text-slate-800 uppercase tracking-wide">Kiriman Forum</span>
+                                <span class="block text-[11px] text-slate-400 mt-1">Daftar isi kiriman diskusi forum dan kategori pengumuman.</span>
+                            </div>
+                        </label>
+
+                        <!-- Innovations Option -->
+                        <label class="relative flex items-start p-4 rounded-2xl border border-slate-100 hover:border-amber-300 hover:bg-[#f7ede0]/30 cursor-pointer transition-all group">
+                            <input type="radio" name="table" value="innovations" class="mt-1 accent-[#8b6e50] focus:ring-[#8b6e50]" id="radio-innovations">
+                            <div class="ml-3">
+                                <span class="block text-xs font-black text-slate-800 uppercase tracking-wide">Inovasi & Proker</span>
+                                <span class="block text-[11px] text-slate-400 mt-1">Daftar ide program kerja inovasi dan lampiran filenya.</span>
+                            </div>
+                        </label>
+
+                        <!-- Achievements Option -->
+                        <label class="relative flex items-start p-4 rounded-2xl border border-slate-100 hover:border-amber-300 hover:bg-[#f7ede0]/30 cursor-pointer transition-all group">
+                            <input type="radio" name="table" value="achievements" class="mt-1 accent-[#8b6e50] focus:ring-[#8b6e50]" id="radio-achievements">
+                            <div class="ml-3">
+                                <span class="block text-xs font-black text-slate-800 uppercase tracking-wide">Daftar Prestasi</span>
+                                <span class="block text-[11px] text-slate-400 mt-1">Daftar prestasi remaja yang dipublikasikan dalam sistem.</span>
+                            </div>
+                        </label>
+
+                    </div>
+
+                    <!-- Format Selector -->
+                    <div class="border-t border-slate-100 pt-6">
+                        <label class="block text-xs font-black text-slate-500 uppercase tracking-wider mb-3">Format Unduhan</label>
+                        <div class="flex items-center gap-6">
+                            <label class="flex items-center gap-2.5 cursor-pointer group text-sm font-bold text-slate-700">
+                                <input type="radio" name="format" value="xlsx" checked class="accent-[#8b6e50] w-4 h-4" id="radio-format-xlsx">
+                                <span>Microsoft Excel (.xlsx)</span>
+                            </label>
+                            <label class="flex items-center gap-2.5 cursor-pointer group text-sm font-bold text-slate-700">
+                                <input type="radio" name="format" value="csv" class="accent-[#8b6e50] w-4 h-4" id="radio-format-csv">
+                                <span>Comma Separated Values (.csv)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Download Button -->
+                    <div class="pt-4">
+                        <button type="submit" id="btn-export-download" class="w-full bg-[#8b6e50] hover:bg-[#6a543d] text-white py-4 px-8 rounded-2xl font-black uppercase tracking-wider text-xs shadow-lg shadow-amber-900/10 hover:shadow-xl hover:shadow-amber-900/20 hover:scale-[1.01] transition-all flex items-center justify-center gap-3 active:scale-95">
+                            📥 Proses & Unduh Laporan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

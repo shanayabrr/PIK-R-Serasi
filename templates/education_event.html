@@ -1,0 +1,654 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-8 space-y-6">
+  <!-- Tab Navigation -->
+  <div class="flex space-x-4">
+    <a href="{{ url_for('education_event', tab='edukasi') }}" class="px-4 py-2 rounded-xl text-sm font-black uppercase tracking-widest {% if active_tab == 'edukasi' %}bg-white text-amber-600{% else %}bg-amber-50 text-amber-800{% endif %}">Edukasi</a>
+    <a href="{{ url_for('education_event', tab='event') }}" class="px-4 py-2 rounded-xl text-sm font-black uppercase tracking-widest {% if active_tab == 'event' %}bg-white text-amber-600{% else %}bg-amber-50 text-amber-800{% endif %}">Event</a>
+  </div>
+
+  {% if active_tab == 'edukasi' %}
+    <!-- Edukasi Section (same as education.html) -->
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    <div class="max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+            <div>
+                <h2 class="text-4xl font-black text-slate-800 tracking-tighter">Portal Edukasi Remaja</h2>
+                <p class="text-slate-500 mt-2 font-medium italic">Wawasan sehat, remaja hebat! 🚀</p>
+            </div>
+            {% if session.get('role') in ['admin_pikr', 'konselor'] %}
+            <button onclick="document.getElementById('modalAdd').classList.remove('hidden')" class="btn-premium text-white px-6 py-3 rounded-2xl font-bold text-sm shadow-xl flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                Tambah Materi
+            </button>
+            {% endif %}
+        </div>
+
+        <!-- Grid Articles -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+            {% for art in articles %}
+            <div class="premium-card p-8 rounded-[2.5rem] flex flex-col justify-between relative group overflow-hidden h-full">
+                <div class="absolute -right-12 -top-12 w-40 h-40 bg-pink-100/50 rounded-full opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-700 pointer-events-none"></div>
+                {% if session.get('role') == 'admin_pikr' or (session.get('role') == 'konselor' and art.author == session.get('username')) %}
+                <div class="absolute top-6 right-6 z-20">
+                    <button onclick="toggleEduMenu('{{ art.id }}')" class="w-10 h-10 flex items-center justify-center bg-white/80 backdrop-blur-sm text-slate-400 rounded-2xl hover:bg-pink-600 hover:text-white transition-all shadow-sm border border-slate-100">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+                    </button>
+                    <div id="eduMenu-{{ art.id }}" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-2xl border border-pink-50 z-[60] overflow-hidden animate-fade-in">
+                        <button onclick="openEditEduModal('{{ art.id }}')" class="w-full text-left px-5 py-4 text-[10px] text-blue-600 font-black hover:bg-blue-50 transition-colors uppercase tracking-widest">✏️ Edit Materi</button>
+                        <a href="{{ url_for('delete_education', edu_id=art.id) }}" onclick="return confirm('Hapus materi ini?')" class="block px-5 py-4 text-[10px] text-red-600 font-black hover:bg-red-50 transition-colors uppercase tracking-widest">🗑️ Hapus Materi</a>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="relative z-10">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="bg-pink-100 text-pink-700 text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-[0.1em]">Article</span>
+                        <span class="text-[9px] font-black text-slate-300 uppercase tracking-widest">ID #{{ art.id }}</span>
+                    </div>
+                    <h3 class="text-2xl font-black mb-3 pr-10 text-slate-800 leading-tight group-hover:text-pink-600 transition-colors">{{ art.title }}</h3>
+                    {% if art.content and art.content.strip() != "" %}
+                    <p class="text-slate-500 mb-6 text-sm leading-relaxed">{{ art.content|striptags|truncate(140) }}</p>
+                    <a href="{{ url_for('education_detail', article_id=art.id) }}" class="inline-flex items-center text-pink-600 text-xs font-black uppercase tracking-widest hover:translate-x-2 transition-transform mb-6">Baca Selengkapnya</a>
+                    {% else %}
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-dashed border-slate-200 mb-6 flex items-center gap-3">
+                        <span class="text-xl">📄</span>
+                        <p class="text-xs text-slate-400 font-bold italic">Materi dibagikan dalam bentuk dokumen lampiran.</p>
+                    </div>
+                    {% endif %}
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-8 h-8 bg-slate-800 rounded-xl flex items-center justify-center text-xs font-black text-white uppercase">{{ art.author[0] }}</div>
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Oleh {{ art.author }}</span>
+                    </div>
+                    {% if art.dokumen %}
+                    <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 flex items-center justify-between shadow-sm group/doc transition-all hover:bg-emerald-100 mb-6">
+                        <div class="flex items-center gap-3 truncate pr-4">
+                            <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">📑</div>
+                            <span class="text-[10px] font-black text-emerald-800 truncate">{{ art.dokumen.split('_', 1)[1] if '_' in art.dokumen else art.dokumen }}</span>
+                        </div>
+                        <a href="{{ url_for('static', filename='uploads/' + art.dokumen) }}" download class="bg-emerald-600 text-white px-4 py-2 rounded-xl text-[10px] font-black hover:bg-emerald-700 transition-all uppercase tracking-wider">Unduh</a>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="mt-auto border-t border-slate-100 pt-6 relative z-10">
+                    <h4 class="text-[10px] font-black text-slate-400 mb-4 uppercase tracking-[0.2em]">Ulasan Terkini</h4>
+                    <div class="space-y-3 mb-6 max-h-48 overflow-y-auto pr-2 custom-scroll">
+                        {% if art.comments %}
+                        {% for c in art.comments %}
+                        <div class="bg-slate-50/50 p-4 rounded-2xl border border-slate-100 group/comment relative">
+                            <div class="flex justify-between items-start mb-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-black text-slate-800 text-[10px]">{{ c.username }}</span>
+                                    <span class="bg-amber-100 text-amber-700 font-black text-[9px] px-2 py-0.5 rounded-md uppercase">⭐ {{ c.rating }}</span>
+                                </div>
+                                <div class="flex gap-2 opacity-0 group-hover/comment:opacity-100 transition-opacity">
+                                    {% if c.username == session.get('username') %}
+                                    <button onclick="openEditEduCommentModal('{{ art.id }}', '{{ c.id }}', '{{ c.text }}')" class="text-blue-500 hover:text-blue-700 text-[9px] font-black uppercase tracking-widest">Edit</button>
+                                    {% endif %}
+                                    {% if session.get('role') == 'admin_pikr' or c.username == session.get('username') %}
+                                    <a href="{{ url_for('delete_comment', article_id=art.id, comment_id=c.id) }}" onclick="return confirm('Hapus ulasan ini?')" class="text-red-500 hover:text-red-700 text-[9px] font-black uppercase tracking-widest">Hapus</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% if c.text %}
+                            <p class="text-slate-500 italic text-[11px] leading-relaxed">"{{ c.text }}"</p>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <div class="text-center py-4 text-slate-300 italic text-xs">Belum ada ulasan materi.</div>
+                        {% endif %}
+                    </div>
+                    {% if session.get('role') == 'anggota_remaja' %}
+                    <form action="{{ url_for('add_comment', article_id=art.id) }}" method="POST" class="flex gap-2 items-center">
+                        <input type="text" name="comment" placeholder="Tulis ulasan (Opsional)..." class="flex-1 text-xs p-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-pink-500 focus:bg-white transition-all"/>
+                        <select name="rating" class="text-xs p-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-slate-600 outline-none">
+                            <option value="5">5 ⭐</option>
+                            <option value="4">4 ⭐</option>
+                            <option value="3">3 ⭐</option>
+                            <option value="2">2 ⭐</option>
+                            <option value="1">1 ⭐</option>
+                        </select>
+                        <button type="submit" class="bg-slate-800 text-white p-3 rounded-2xl hover:bg-pink-600 transition-all shadow-md"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+  {% if active_tab == 'event' %}
+    <!-- Events Section (same as events.html) -->
+    <div class="max-w-7xl mx-auto space-y-12">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-slate-200 pb-10">
+            <div>
+                <h2 class="text-5xl font-black text-slate-800 tracking-tighter">Kegiatan &amp; Agenda</h2>
+                <p class="text-slate-500 mt-3 font-medium text-lg italic">Temukan inspirasi dan kembangkan potensimu bersama PIK-R SERASI. 🌟</p>
+            </div>
+            {% if session.get('role') in ['admin_pikr', 'konselor'] %}
+            <button onclick="document.getElementById('modalAddEvent').classList.remove('hidden')" class="btn-premium text-white px-8 py-4 rounded-2xl font-black text-sm shadow-2xl flex items-center gap-3 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                TAMBAH KEGIATAN
+            </button>
+            {% endif %}
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {% for ev in events %}
+            <div class="premium-card rounded-[2.5rem] flex flex-col justify-between relative group overflow-hidden border-slate-100 hover:border-pink-200 h-full">
+                <div class="absolute -right-20 -top-20 w-48 h-48 bg-pink-100/40 rounded-full opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-700 pointer-events-none"></div>
+                {% if session.get('role') == 'admin_pikr' or (session.get('role') == 'konselor' and ev.author == session.get('username')) %}
+                <div class="absolute top-6 right-6 flex gap-2 z-20">
+                    <button data-edit-btn-id="{{ ev.id }}" onclick='openEditEventModal({{ ev.id }}, {{ ev.title|tojson }}, {{ ev.description|tojson }}, {{ ev.date|tojson }}, {{ ev.time|tojson }}, {{ (ev.foto or "")|tojson }})' class="w-10 h-10 flex items-center justify-center bg-blue-50 text-blue-600 rounded-2xl hover:bg-blue-600 hover:text-white transition-all shadow-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg></button>
+                    <a href="{{ url_for('delete_event', event_id=ev.id) }}" onclick="return confirm('Hapus kegiatan ini secara permanen?')" class="w-10 h-10 flex items-center justify-center bg-rose-50 text-rose-600 rounded-2xl hover:bg-rose-600 hover:text-white transition-all shadow-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3"/></svg></a>
+                </div>
+                {% endif %}
+                {# Foto Banner #}
+                {% if ev.foto_list %}
+                <div class="relative w-full h-44 overflow-hidden rounded-t-[2.5rem]">
+                    <img src="{{ url_for('static', filename='uploads/' + ev.foto_list[0]) }}" alt="{{ ev.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                    <span class="absolute bottom-3 left-4 bg-indigo-600/90 backdrop-blur-sm text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-[0.1em]">Upcoming Event</span>
+                    {% if ev.foto_list | length > 1 %}
+                    <span class="absolute top-3 right-4 bg-black/60 backdrop-blur-sm text-white text-[9px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider flex items-center gap-1 z-30">
+                        📸 +{{ ev.foto_list | length - 1 }} Foto
+                    </span>
+                    {% endif %}
+                </div>
+                {% endif %}
+                <div class="p-8 relative z-10">
+                    {% if not ev.foto_list %}
+                    <div class="flex items-center gap-2 mb-6"><span class="bg-indigo-100 text-indigo-700 text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-[0.1em]">Upcoming Event</span></div>
+                    {% endif %}
+                    <h3 class="text-2xl font-black text-slate-800 mb-6 leading-tight pr-10 group-hover:text-pink-600 transition-colors">{{ ev.title }}</h3>
+                    <div class="grid grid-cols-2 gap-4 mb-8">
+                        <div class="bg-slate-50 p-4 rounded-3xl border border-slate-100 group-hover:bg-white transition-colors"><p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Tanggal</p><p class="text-xs font-black text-slate-700">{{ ev.date }}</p></div>
+                        <div class="bg-slate-50 p-4 rounded-3xl border border-slate-100 group-hover:bg-white transition-colors"><p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Waktu</p><p class="text-xs font-black text-slate-700">{{ ev.time }} WIB</p></div>
+                    </div>
+                    <div class="text-slate-600 text-sm leading-relaxed mb-4 space-y-2">
+                      <p>{{ ev.description | truncate(100, true, '...') }}</p>
+                    </div>
+                    <a href="{{ url_for('event_detail', event_id=ev.id) }}"
+                       class="inline-flex items-center gap-1 text-xs font-black text-pink-600 hover:text-pink-800 uppercase tracking-widest mb-6 transition-colors group">
+                      Baca selengkapnya
+                      <svg class="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                      </svg>
+                    </a>
+                </div>
+                <div class="p-8 pt-0 relative z-10">
+                    <div class="bg-slate-50/50 p-6 rounded-[2rem] border border-slate-100 group-hover:bg-white transition-all">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex -space-x-2">
+                                {% for p in ev.participants[:3] %}
+                                <div class="w-8 h-8 rounded-full border-2 border-white bg-slate-200 flex items-center justify-center text-[10px] font-black text-slate-600 uppercase shadow-sm" title="{{ p }}">{{ p[0] | upper }}</div>
+                                {% endfor %}
+                                {% if ev.participants|length > 3 %}
+                                <div class="w-8 h-8 rounded-full border-2 border-white bg-pink-100 flex items-center justify-center text-[10px] font-black text-pink-600 shadow-sm">+{{ ev.participants|length - 3 }}</div>
+                                {% elif ev.participants|length == 0 %}
+                                <div class="w-8 h-8 rounded-full border-2 border-white bg-slate-50 flex items-center justify-center text-[10px] font-black text-slate-300 shadow-sm">0</div>
+                                {% endif %}
+                            </div>
+                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Terdaftar</span>
+                        </div>
+                        {% if session.get('role') == 'anggota_remaja' %}
+                            {% if session.get('username') in ev.participants %}
+                            <div class="space-y-3">
+                                <div class="w-full bg-emerald-50 text-emerald-600 font-black py-4 rounded-2xl text-[10px] uppercase tracking-[0.2em] text-center border border-emerald-100">✓ Terdaftar</div>
+                                <a href="{{ url_for('leave_event', event_id=ev.id) }}" onclick="return confirm('Batal mengikuti kegiatan ini?')" class="block w-full text-rose-400 hover:text-rose-600 text-center font-black py-2 text-[9px] uppercase tracking-[0.2em] transition-colors">✕ Batal Ikuti</a>
+                            </div>
+                            {% else %}
+                            <a href="{{ url_for('join_event', event_id=ev.id) }}" class="btn-premium block w-full text-white text-center font-black py-4 rounded-2xl text-[10px] uppercase tracking-[0.2em] shadow-xl hover:scale-105 transition-transform">IKUTI KEGIATAN</a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-span-full premium-card p-20 rounded-[3rem] text-center border-dashed border-slate-200">
+                <div class="text-6xl mb-6 opacity-30">📅</div>
+                <p class="text-xl font-black text-slate-400 tracking-tighter">Belum ada agenda kegiatan saat ini.</p>
+                <p class="text-slate-300 text-sm mt-2 font-medium">Tetap pantau untuk kejutan menarik selanjutnya!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{# ===== MODAL TAMBAH MATERI EDUKASI (Admin) ===== #}
+<div id="modalAdd" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+    <div class="bg-white rounded-[2rem] w-full max-w-xl shadow-2xl animate-fade-in relative overflow-hidden max-h-[92vh] flex flex-col">
+
+        {# Header #}
+        <div class="flex items-center justify-between px-8 pt-8 pb-6 border-b border-slate-100">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow-md" style="background:linear-gradient(135deg,#f472b6,#db2777)">📚</div>
+                <div>
+                    <h3 class="text-xl font-black text-slate-800 leading-tight">Tambah Materi Edukasi</h3>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Portal Edukasi · PIK-R SERASI</p>
+                </div>
+            </div>
+            <button onclick="document.getElementById('modalAdd').classList.add('hidden')"
+                    class="w-9 h-9 flex items-center justify-center bg-slate-100 rounded-xl text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all text-lg font-bold">✕</button>
+        </div>
+
+        {# Body (scrollable) #}
+        <div class="overflow-y-auto flex-1 px-8 py-6">
+            <form id="formAddMateri" action="{{ url_for('add_article') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
+
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 mb-1.5 uppercase tracking-[0.18em]">Judul Materi <span class="text-red-400">*</span></label>
+                    <input type="text" name="title" required
+                           placeholder="Contoh: Pentingnya Kesehatan Reproduksi Remaja"
+                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-300 outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-300 focus:bg-white transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 mb-1.5 uppercase tracking-[0.18em]">Isi / Konten Materi</label>
+                    <p class="text-[10px] text-slate-400 mb-2 leading-relaxed">Tulis isi materi secara langsung, atau biarkan kosong jika ingin upload dokumen saja.</p>
+                    <textarea name="content" rows="5"
+                              placeholder="Tuliskan isi materi edukasi di sini..."
+                              class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-300 outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-300 focus:bg-white transition-all leading-relaxed resize-none"></textarea>
+                </div>
+
+                <div class="relative flex items-center gap-3">
+                    <div class="flex-1 h-px bg-slate-200"></div>
+                    <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest px-1">atau lampirkan dokumen</span>
+                    <div class="flex-1 h-px bg-slate-200"></div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 mb-1.5 uppercase tracking-[0.18em]">Upload Dokumen (PDF / DOCX / Gambar)</label>
+                    <div class="border-2 border-dashed border-slate-200 rounded-xl p-4 hover:border-pink-300 transition-colors">
+                        <input type="file" name="dokumen" accept=".pdf,.docx,image/*"
+                               class="w-full text-xs text-slate-500
+                                      file:mr-3 file:py-2 file:px-5 file:rounded-lg file:border-0
+                                      file:text-xs file:font-black file:bg-slate-800 file:text-white
+                                      hover:file:bg-pink-600 file:transition-all file:cursor-pointer cursor-pointer">
+                        <p class="text-[9px] text-slate-300 mt-2 font-medium">Maks. ukuran file: 10 MB · Format: PDF, DOCX, JPG, PNG</p>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit"
+                            class="w-full py-3.5 rounded-xl font-black text-sm text-white shadow-lg transition-all hover:opacity-90 active:scale-95"
+                            style="background: linear-gradient(135deg,#f472b6,#db2777)">
+                        🚀 Terbitkan Materi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{# ===== MODAL TAMBAH KEGIATAN / EVENT ===== #}
+<div id="modalAddEvent" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+    <div class="bg-white rounded-[2rem] w-full max-w-xl shadow-2xl animate-fade-in relative overflow-hidden max-h-[92vh] flex flex-col">
+
+        {# Header #}
+        <div class="flex items-center justify-between px-8 pt-8 pb-6 border-b border-slate-100">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow-md" style="background:linear-gradient(135deg,#818cf8,#4f46e5)">🗓️</div>
+                <div>
+                    <h3 class="text-xl font-black text-slate-800 leading-tight">Tambah Kegiatan</h3>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Agenda & Event · PIK-R SERASI</p>
+                </div>
+            </div>
+            <button onclick="document.getElementById('modalAddEvent').classList.add('hidden')"
+                    class="w-9 h-9 flex items-center justify-center bg-slate-100 rounded-xl text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all text-lg font-bold">✕</button>
+        </div>
+
+        {# Body (scrollable) #}
+        <div class="overflow-y-auto flex-1 px-8 py-6">
+            <form action="{{ url_for('add_event') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
+
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 mb-1.5 uppercase tracking-[0.18em]">Judul Kegiatan <span class="text-red-400">*</span></label>
+                    <input type="text" name="title" required
+                           placeholder="Contoh: Workshop Kesehatan Remaja 2026"
+                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-300 outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-300 focus:bg-white transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 mb-1.5 uppercase tracking-[0.18em]">Deskripsi Kegiatan <span class="text-red-400">*</span></label>
+                    <p class="text-[10px] text-slate-400 mb-2 leading-relaxed">Jelaskan tujuan, manfaat, dan detail kegiatan agar mudah dipahami peserta.</p>
+                    <textarea name="description" rows="4" required
+                              placeholder="Tuliskan deskripsi lengkap kegiatan di sini..."
+                              class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-300 outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-300 focus:bg-white transition-all leading-relaxed resize-none"></textarea>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-500 mb-1.5 uppercase tracking-[0.18em]">Tanggal <span class="text-red-400">*</span></label>
+                        <input type="date" name="date" required
+                               class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-300 focus:bg-white transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-500 mb-1.5 uppercase tracking-[0.18em]">Waktu (WIB) <span class="text-red-400">*</span></label>
+                        <input type="time" name="time" required
+                               class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-300 focus:bg-white transition-all">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 mb-1.5 uppercase tracking-[0.18em]">📸 Foto Kegiatan (Opsional, Bisa Pilih Banyak)</label>
+                    <div id="addEventPhotoPreviewWrap" class="hidden mb-3 flex gap-2 overflow-x-auto py-1"></div>
+                    <div class="border-2 border-dashed border-slate-200 rounded-xl p-4 hover:border-indigo-300 transition-colors">
+                        <input type="file" name="foto" accept="image/*" id="addEventFotoInput" multiple
+                               onchange="previewPhoto(this,'addEventPhotoPreviewWrap')"
+                               class="w-full text-xs text-slate-500
+                                      file:mr-3 file:py-2 file:px-5 file:rounded-lg file:border-0
+                                      file:text-xs file:font-black file:bg-indigo-700 file:text-white
+                                      hover:file:bg-indigo-900 file:transition-all file:cursor-pointer cursor-pointer">
+                        <p class="text-[9px] text-slate-300 mt-2 font-medium">Format: JPG, PNG, WEBP · Maks. 5MB · Anda dapat memilih lebih dari 1 foto</p>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit"
+                            class="w-full py-3.5 rounded-xl font-black text-sm text-white shadow-lg transition-all hover:opacity-90 active:scale-95"
+                            style="background: linear-gradient(135deg,#818cf8,#4f46e5)">
+                        🗓️ Simpan Kegiatan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{# ===== MODAL EDIT KEGIATAN / EVENT ===== #}
+<div id="modalEditEvent" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+    <div class="bg-white rounded-[2rem] w-full max-w-xl shadow-2xl animate-fade-in relative overflow-hidden max-h-[92vh] flex flex-col">
+
+        {# Header #}
+        <div class="flex items-center justify-between px-8 pt-8 pb-6 border-b border-slate-100">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow-md" style="background:linear-gradient(135deg,#60a5fa,#2563eb)">✏️</div>
+                <div>
+                    <h3 class="text-xl font-black text-slate-800 leading-tight">Edit Kegiatan</h3>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Perbarui Detail Agenda</p>
+                </div>
+            </div>
+            <button onclick="document.getElementById('modalEditEvent').classList.add('hidden')"
+                    class="w-9 h-9 flex items-center justify-center bg-slate-100 rounded-xl text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all text-lg font-bold">✕</button>
+        </div>
+
+        {# Body (scrollable) #}
+        <div class="overflow-y-auto flex-1 px-8 py-6">
+            <form id="formEditEvent" method="POST" enctype="multipart/form-data" class="space-y-5">
+                <input type="hidden" name="deleted_photos" id="editEventDeletedPhotosInput" value="">
+
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 mb-1.5 uppercase tracking-[0.18em]">Judul Kegiatan <span class="text-red-400">*</span></label>
+                    <input type="text" name="title" id="editEventTitle" required
+                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-300 focus:bg-white transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 mb-1.5 uppercase tracking-[0.18em]">Deskripsi Kegiatan <span class="text-red-400">*</span></label>
+                    <textarea name="description" id="editEventDesc" rows="4" required
+                              class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-300 focus:bg-white transition-all leading-relaxed resize-none"></textarea>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-500 mb-1.5 uppercase tracking-[0.18em]">Tanggal <span class="text-red-400">*</span></label>
+                        <input type="date" name="date" id="editEventDate" required
+                               class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-300 focus:bg-white transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-500 mb-1.5 uppercase tracking-[0.18em]">Waktu <span class="text-red-400">*</span></label>
+                        <input type="time" name="time" id="editEventTime" required
+                               class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-300 focus:bg-white transition-all">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 mb-1.5 uppercase tracking-[0.18em]">📸 Ganti Foto Kegiatan (Opsional, Bisa Pilih Banyak)</label>
+                    
+                    <!-- Current photos preview -->
+                    <p id="editEventCurrentPhoto" class="text-[10px] text-slate-400 italic mb-2"></p>
+                    <div id="editEventCurrentPhotoPreviewWrap" class="hidden mb-3 flex gap-2 overflow-x-auto py-1"></div>
+                    
+                    <!-- New selected photos preview -->
+                    <div id="editEventPhotoPreviewWrap" class="hidden mb-3 flex gap-2 overflow-x-auto py-1"></div>
+                    
+                    <div class="border-2 border-dashed border-slate-200 rounded-xl p-4 hover:border-blue-300 transition-colors">
+                        <input type="file" name="foto" accept="image/*" id="editEventFotoInput" multiple
+                               onchange="previewPhoto(this,'editEventPhotoPreviewWrap')"
+                               class="w-full text-xs text-slate-500
+                                      file:mr-3 file:py-2 file:px-5 file:rounded-lg file:border-0
+                                      file:text-xs file:font-black file:bg-slate-700 file:text-white
+                                      hover:file:bg-blue-600 file:transition-all file:cursor-pointer cursor-pointer">
+                        <p class="text-[9px] text-slate-300 mt-2 font-medium">Format: JPG, PNG, WEBP · Maks. 5MB · Anda dapat memilih lebih dari 1 foto. Foto baru akan ditambahkan ke foto saat ini.</p>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit"
+                            class="w-full py-3.5 rounded-xl font-black text-sm text-white shadow-lg transition-all hover:opacity-90 active:scale-95"
+                            style="background: linear-gradient(135deg,#60a5fa,#2563eb)">
+                        💾 Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{# ===== MODAL EDIT MATERI EDUKASI ===== #}
+<div id="modalEditEdu" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+    <div class="bg-white rounded-[2rem] w-full max-w-xl shadow-2xl animate-fade-in relative overflow-hidden max-h-[92vh] flex flex-col">
+        <div class="flex items-center justify-between px-8 pt-8 pb-6 border-b border-slate-100">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow-md" style="background:linear-gradient(135deg,#60a5fa,#2563eb)">✏️</div>
+                <div>
+                    <h3 class="text-xl font-black text-slate-800 leading-tight">Edit Materi Edukasi</h3>
+                    <p class="text-[10px] font-bold text-blue-500 uppercase tracking-widest mt-0.5">Portal Edukasi · PIK-R SERASI</p>
+                </div>
+            </div>
+            <button onclick="document.getElementById('modalEditEdu').classList.add('hidden')"
+                    class="w-9 h-9 flex items-center justify-center bg-slate-100 rounded-xl text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all text-lg font-bold">✕</button>
+        </div>
+        <div class="overflow-y-auto flex-1 px-8 py-6">
+            <form id="formEditEdu" method="POST" enctype="multipart/form-data" class="space-y-5">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 mb-1.5 uppercase tracking-[0.18em]">Judul Materi <span class="text-red-400">*</span></label>
+                    <input type="text" name="title" id="editEduTitle" required
+                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-300 focus:bg-white transition-all">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 mb-1.5 uppercase tracking-[0.18em]">Isi / Konten Materi</label>
+                    <textarea name="content" id="editEduContent" rows="5"
+                              class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-300 focus:bg-white transition-all leading-relaxed resize-none"></textarea>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 mb-1.5 uppercase tracking-[0.18em]">Ganti Dokumen (Opsional)</label>
+                    <p id="editEduCurrentFile" class="text-[10px] text-slate-400 italic mb-2"></p>
+                    <div class="border-2 border-dashed border-slate-200 rounded-xl p-4 hover:border-blue-300 transition-colors">
+                        <input type="file" name="dokumen" accept=".pdf,.docx,image/*"
+                               class="w-full text-xs text-slate-500
+                                      file:mr-3 file:py-2 file:px-5 file:rounded-lg file:border-0
+                                      file:text-xs file:font-black file:bg-slate-800 file:text-white
+                                      hover:file:bg-blue-600 file:transition-all file:cursor-pointer cursor-pointer">
+                    </div>
+                </div>
+                <div class="pt-2">
+                    <button type="submit"
+                            class="w-full py-3.5 rounded-xl font-black text-sm text-white shadow-lg transition-all hover:opacity-90 active:scale-95"
+                            style="background: linear-gradient(135deg,#60a5fa,#2563eb)">
+                        💾 Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{# ===== MODAL EDIT KOMENTAR EDUKASI ===== #}
+<div id="modalEditEduComment" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[110] flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl w-full max-w-sm p-8 shadow-2xl animate-fade-in">
+        <h3 class="text-lg font-black text-slate-800 mb-2 tracking-tighter">Perbaiki Ulasan</h3>
+        <p class="text-[9px] font-black text-pink-600 uppercase tracking-widest mb-6">Pembaruan Ulasan Edukasi</p>
+        <form id="formEditEduComment" method="POST" class="space-y-4">
+            <textarea id="editEduCommentText" name="comment" required rows="4"
+                class="w-full p-4 text-sm bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-pink-500"></textarea>
+            <div class="flex gap-3">
+                <button type="button" onclick="document.getElementById('modalEditEduComment').classList.add('hidden')"
+                    class="flex-1 bg-slate-100 text-slate-600 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-200 transition-all">Batal</button>
+                <button type="submit"
+                    class="flex-1 bg-pink-600 text-white py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-pink-700 transition-all shadow-md">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function previewPhoto(input, wrapId) {
+        const wrap = document.getElementById(wrapId);
+        wrap.innerHTML = '';
+        if (input.files && input.files.length > 0) {
+            wrap.className = 'flex gap-2 overflow-x-auto mb-3 py-1';
+            for (let i = 0; i < input.files.length; i++) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'w-20 h-20 object-cover rounded-xl border border-blue-100 flex-shrink-0';
+                    wrap.appendChild(img);
+                };
+                reader.readAsDataURL(input.files[i]);
+            }
+            wrap.classList.remove('hidden');
+        } else {
+            wrap.classList.add('hidden');
+        }
+    }
+
+    let editEventDeletedPhotos = [];
+
+    function openEditEventModal(evId, title, description, date, time, foto) {
+        document.getElementById('editEventTitle').value = title || '';
+        document.getElementById('editEventDesc').value = description || '';
+        document.getElementById('editEventDate').value = date || '';
+        document.getElementById('editEventTime').value = time || '';
+        document.getElementById('formEditEvent').action = '/admin/events/edit/' + evId;
+        
+        // Reset deleted photos list & hidden input
+        editEventDeletedPhotos = [];
+        document.getElementById('editEventDeletedPhotosInput').value = '';
+        
+        // Reset new foto input & preview
+        document.getElementById('editEventFotoInput').value = '';
+        const newPreviewWrap = document.getElementById('editEventPhotoPreviewWrap');
+        newPreviewWrap.innerHTML = '';
+        newPreviewWrap.classList.add('hidden');
+        
+        // Load current photos preview
+        const currentPreviewWrap = document.getElementById('editEventCurrentPhotoPreviewWrap');
+        currentPreviewWrap.innerHTML = '';
+        const photoInfo = document.getElementById('editEventCurrentPhoto');
+        
+        if (foto) {
+            const photoList = foto.split(',').filter(f => f.trim());
+            photoInfo.textContent = `📷 ${photoList.length} foto saat ini (klik ✕ untuk menghapus):`;
+            
+            photoList.forEach(f => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'relative w-20 h-20 flex-shrink-0';
+                
+                const img = document.createElement('img');
+                img.src = '/static/uploads/' + f;
+                img.className = 'w-full h-full object-cover rounded-xl border border-blue-100';
+                
+                const delBtn = document.createElement('button');
+                delBtn.type = 'button';
+                delBtn.innerHTML = '✕';
+                delBtn.className = 'absolute -top-1.5 -right-1.5 w-5 h-5 bg-rose-600 text-white rounded-full flex items-center justify-center text-[10px] font-black hover:bg-rose-700 transition-all shadow-md';
+                
+                delBtn.onclick = function() {
+                    itemDiv.remove();
+                    editEventDeletedPhotos.push(f);
+                    document.getElementById('editEventDeletedPhotosInput').value = editEventDeletedPhotos.join(',');
+                    const remainingCount = photoList.length - editEventDeletedPhotos.length;
+                    photoInfo.textContent = remainingCount > 0 
+                        ? `📷 ${remainingCount} foto saat ini (klik ✕ untuk menghapus):`
+                        : 'Semua foto saat ini akan dihapus.';
+                };
+                
+                itemDiv.appendChild(img);
+                itemDiv.appendChild(delBtn);
+                currentPreviewWrap.appendChild(itemDiv);
+            });
+            currentPreviewWrap.classList.remove('hidden');
+        } else {
+            photoInfo.textContent = 'Belum ada foto';
+            currentPreviewWrap.classList.add('hidden');
+        }
+        document.getElementById('modalEditEvent').classList.remove('hidden');
+    }
+
+    function toggleEduMenu(id) {
+        const menu = document.getElementById('eduMenu-' + id);
+        document.querySelectorAll('[id^="eduMenu-"]').forEach(m => {
+            if (m.id !== 'eduMenu-' + id) m.classList.add('hidden');
+        });
+        menu.classList.toggle('hidden');
+    }
+
+    async function openEditEduModal(eduId) {
+        document.querySelectorAll('[id^="eduMenu-"]').forEach(m => m.classList.add('hidden'));
+        try {
+            const resp = await fetch(`/admin/education/edit/${eduId}`);
+            const data = await resp.json();
+            document.getElementById('editEduTitle').value = data.title || '';
+            document.getElementById('editEduContent').value = data.content || '';
+            const fileInfo = document.getElementById('editEduCurrentFile');
+            fileInfo.textContent = data.dokumen
+                ? `File saat ini: ${data.dokumen.split('_').slice(1).join('_') || data.dokumen}`
+                : 'Belum ada lampiran';
+            document.getElementById('formEditEdu').action = `/admin/education/edit/${eduId}`;
+            document.getElementById('modalEditEdu').classList.remove('hidden');
+        } catch(e) {
+            alert('Gagal memuat data materi.');
+        }
+    }
+
+    function openEditEduCommentModal(artId, commentId, text) {
+        const actionUrl = '/edit_comment/' + artId + '/' + commentId;
+        document.getElementById('formEditEduComment').action = actionUrl;
+        document.getElementById('editEduCommentText').value = text;
+        document.getElementById('modalEditEduComment').classList.remove('hidden');
+    }
+
+    // Tutup modal saat klik area gelap di luar
+    ['modalAdd', 'modalAddEvent', 'modalEditEvent', 'modalEditEdu', 'modalEditEduComment'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('click', function(e) {
+                if (e.target === el) el.classList.add('hidden');
+            });
+        }
+    });
+
+    // Tutup dropdown saat klik di luar
+    window.addEventListener('click', function(e) {
+        if (!e.target.closest('.relative')) {
+            document.querySelectorAll('[id^="eduMenu-"]').forEach(m => m.classList.add('hidden'));
+        }
+    });
+
+    // Auto-open edit modal if edit_id is in URL query parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const editId = urlParams.get('edit_id');
+    if (editId) {
+        const editBtn = document.querySelector(`[data-edit-btn-id="${editId}"]`);
+        if (editBtn) {
+            editBtn.click();
+        }
+    }
+</script>
+
+{% endblock %}

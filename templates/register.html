@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="min-h-[80vh] flex items-center justify-center p-6 fade-in">
+    <div class="premium-card w-full max-w-lg p-12 rounded-[3rem] relative overflow-hidden">
+        {# Decorative Blob #}
+        <div class="absolute -left-20 -bottom-20 w-48 h-48 bg-indigo-100 rounded-full opacity-30 blur-2xl"></div>
+        
+        <div class="relative z-10">
+            <div class="text-center mb-10">
+                <div class="w-20 h-20 bg-pink-600 rounded-3xl flex items-center justify-center text-3xl shadow-2xl mx-auto mb-6">✨</div>
+                <h2 class="text-4xl font-black text-slate-800 tracking-tighter">Gabung Sekarang</h2>
+                <p class="text-slate-400 font-bold uppercase tracking-[0.2em] text-[10px] mt-2">Mulai perjalananmu bersama PIK-R SERASI</p>
+            </div>
+
+            <form action="{{ url_for('register') }}" method="POST" class="space-y-6">
+                <div class="space-y-2">
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Username</label>
+                    <input type="text" name="username" required 
+                        class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm outline-none focus:ring-2 focus:ring-pink-500 focus:bg-white transition-all font-bold text-slate-700"
+                        placeholder="Pilih username unik">
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Password</label>
+                    <input type="password" name="password" required 
+                        class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm outline-none focus:ring-2 focus:ring-pink-500 focus:bg-white transition-all font-bold text-slate-700"
+                        placeholder="••••••••">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Tanggal Lahir</label>
+                        <input type="date" name="birth_date" required 
+                            class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm outline-none focus:ring-2 focus:ring-pink-500 focus:bg-white transition-all font-bold text-slate-700">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Peran</label>
+                        <select name="role" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm outline-none focus:ring-2 focus:ring-pink-500 focus:bg-white transition-all font-black text-slate-700 appearance-none">
+                            <option value="anggota_remaja">🙋‍♂️ Anggota Remaja</option>
+                            <option value="konselor">🤝 Konselor Sebaya</option>
+                        </select>
+                    </div>
+                </div>
+
+                <p class="text-[9px] text-slate-400 font-bold italic ml-1">
+                    * Berdasarkan ketentuan BKKBN, usia anggota harus berkisar antara 10-24 tahun.
+                </p>
+
+                <div class="pt-4">
+                    <button type="submit" 
+                        class="btn-premium w-full text-white py-5 rounded-2xl font-black text-xs tracking-[0.2em] uppercase shadow-2xl hover:scale-[1.02] transition-transform">
+                        BUAT AKUN &rarr;
+                    </button>
+                </div>
+
+                <div class="text-center pt-4 border-t border-slate-100">
+                    <p class="text-slate-400 text-xs font-bold">
+                        Sudah punya akun? 
+                        <a href="{{ url_for('login') }}" class="text-pink-600 hover:text-pink-700 font-black uppercase tracking-widest ml-1">Masuk</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

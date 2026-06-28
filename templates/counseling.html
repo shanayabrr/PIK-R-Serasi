@@ -1,0 +1,351 @@
+{% extends 'base.html' %} 
+
+{% block content %}
+<div class="max-w-6xl mx-auto space-y-12 fade-in">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-slate-200 pb-8">
+    <div>
+      <h2 class="text-4xl font-black text-slate-800 tracking-tighter">
+        {% if session.get('user_id') %}
+          {% if session.get('role') == 'admin_pikr' %}Monitoring Konseling{% else %}Layanan Konseling Sebaya{% endif %}
+        {% else %}
+          Booking Konseling Sebagai Tamu
+        {% endif %}
+      </h2>
+      <p class="text-slate-500 mt-2 font-medium">
+        {% if session.get('user_id') %}
+          Manajemen jadwal dan riwayat sesi PIK-R SERASI.
+        {% else %}
+          Isi nama panggilan dan pilih konselor, lalu pilih mode online atau offline.
+        {% endif %}
+    </div>
+    <div class="flex gap-2">
+        <span class="bg-pink-100 text-pink-700 px-4 py-1.5 rounded-full text-xs font-bold shadow-sm">#MentalHealth</span>
+        <span class="bg-emerald-100 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-bold shadow-sm">#SupportSystem</span>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+    {% if not session.get('user_id') %}
+    <div class="lg:col-span-3">
+      <div class="premium-card p-8 rounded-[2.5rem] border-slate-200 h-fit">
+        <div class="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center text-xl shadow-lg shadow-amber-200 mb-6">🗓️</div>
+        <h3 class="text-2xl font-black mb-6 text-slate-800 tracking-tighter">Booking Konseling Tamu</h3>
+        <form action="{{ url_for('counseling') }}" method="POST" class="space-y-5">
+          <div>
+            <label class="block text-sm font-black text-slate-800 mb-2 tracking-[0.01em]">Nama Panggilan (Opsional)</label>
+            <input type="text" name="nickname" maxlength="40" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all" placeholder="Contoh: Santi / Anonim" />
+          </div>
+          <div>
+            <label class="block text-sm font-black text-slate-800 mb-2 tracking-[0.01em]">Pilih Konselor</label>
+            <select name="counselor_name" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all font-bold text-slate-700">
+              <option value="" disabled selected>— Pilih Konselor —</option>
+              {% if konselor_data %}
+                {% for k in konselor_data %}
+                  <option value="{{ k.username }}">✨ {{ k.username }}</option>
+                {% endfor %}
+              {% else %}
+                <option value="wulan">Wulan</option>
+              {% endif %}
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-black text-slate-800 mb-2 tracking-[0.01em]">Topik Konseling</label>
+            <select name="topic" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all font-bold text-slate-700">
+              <option value="Kesehatan Mental">🧠 kesehatan mental</option>
+              <option value="Kesehatan Reproduksi">🩺 kesehatan reproduksi</option>
+              <option value="Pengembangan Diri">✨ pengembangan diri</option>
+              <option value="Bullying & Sosial">🤝 Bullying & Sosial</option>
+              <option value="Lainnya">📝 lainnya</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-black text-slate-800 mb-2 tracking-[0.01em]">Tanggal</label>
+              <input type="date" name="date" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all" />
+            </div>
+            <div>
+              <label class="block text-sm font-black text-slate-800 mb-2 tracking-[0.01em]">Waktu</label>
+              <input type="time" name="time" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-black text-slate-800 mb-2 tracking-[0.01em]">Metode Konseling</label>
+            <select name="mode" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all font-bold text-slate-700">
+              <option value="online">Online (WhatsApp)</option>
+              <option value="offline">Offline (Tatap Muka)</option>
+            </select>
+          </div>
+          <div class="flex items-start gap-3">
+            <input type="checkbox" id="consent" name="consent" value="1" class="mt-1" required />
+            <label for="consent" class="text-[10px] text-slate-500">Saya setuju syarat dan kebijakan privasi dan memahami ini bukan layanan darurat.</label>
+          </div>
+          <button type="submit" class="btn-premium w-full text-white py-4 rounded-2xl font-bold text-sm shadow-xl mt-2 hover:scale-105 transition-transform">Kirim Permintaan</button>
+        </form>
+      </div>
+    </div>
+    {% elif session.get('role') == 'anggota_remaja' %}
+    <div class="premium-card p-8 rounded-[2.5rem] border-pink-100 h-fit sticky top-24">
+      <div class="w-12 h-12 bg-pink-600 rounded-2xl flex items-center justify-center text-xl shadow-lg shadow-pink-200 mb-6">🗓️</div>
+      <h3 class="text-2xl font-black mb-6 text-slate-800 tracking-tighter">Jadwalkan Sesi</h3>
+      <form action="{{ url_for('counseling') }}" method="POST" class="space-y-5">
+        <div>
+            <label class="block text-sm font-black text-pink-600 mb-2 tracking-[0.01em]">Pilih Konselor</label>
+            <select name="counselor_name" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm outline-none focus:ring-2 focus:ring-pink-500 focus:bg-white transition-all font-bold text-slate-700">
+              <option value="" disabled selected>— Pilih Konselor —</option>
+              {% if konselor_data %}
+                {% for k in konselor_data %}
+                  <option value="{{ k.username }}">✨ {{ k.username }}</option>
+                {% endfor %}
+              {% else %}
+                <option value="admin_pikr">Admin PIK-R SERASI</option>
+              {% endif %}
+            </select>
+        </div>
+        <div>
+            <label class="block text-sm font-black text-pink-600 mb-2 tracking-[0.01em]">Topik Konseling</label>
+            <select name="topic" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm outline-none focus:ring-2 focus:ring-pink-500 focus:bg-white transition-all font-bold text-slate-700">
+              <option value="Kesehatan Mental">🧠 Kesehatan Mental</option>
+              <option value="Kesehatan Reproduksi">🩺 Kesehatan Reproduksi</option>
+              <option value="Pengembangan Diri">✨ Pengembangan Diri</option>
+              <option value="Bullying & Sosial">🤝 Bullying & Sosial</option>
+              <option value="Lainnya">📝 Lainnya</option>
+            </select>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+              <label class="block text-sm font-black text-pink-600 mb-2 tracking-[0.01em]">Tanggal</label>
+              <input type="date" name="date" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm outline-none focus:ring-2 focus:ring-pink-500 focus:bg-white transition-all" />
+          </div>
+          <div>
+              <label class="block text-sm font-black text-pink-600 mb-2 tracking-[0.01em]">Waktu</label>
+              <input type="time" name="time" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm outline-none focus:ring-2 focus:ring-pink-500 focus:bg-white transition-all" />
+          </div>
+        </div>
+        <div>
+            <label class="block text-sm font-black text-pink-600 mb-2 tracking-[0.01em]">Metode Konseling</label>
+            <select name="mode" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm outline-none focus:ring-2 focus:ring-pink-500 focus:bg-white transition-all font-bold text-slate-700">
+                <option value="online">online (whatsapp)</option>
+                <option value="offline">offline (tatap muka)</option>
+            </select>
+            <p class="text-[10px] text-slate-400 mt-2">Jika memilih <strong>Online</strong>, Anda akan diarahkan ke WhatsApp konselor setelah mengirim permintaan.</p>
+        </div>
+        <button type="submit" class="btn-premium w-full text-white py-4 rounded-2xl font-bold text-sm shadow-xl mt-2">
+            kirim permintaan &rarr;
+        </button>
+      </form>
+    </div>
+    {% endif %}
+
+    {% if session.get('user_id') %}
+        {# TABEL RIWAYAT PREMIUM #}
+    <div class="{% if session.get('role') == 'anggota_remaja' %}lg:col-span-2{% else %}lg:col-span-3{% endif %}">
+      <div class="premium-card rounded-[2.5rem]">
+        <div class="p-8 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white/50">
+            <div>
+              <h3 class="text-xl font-black text-slate-800 tracking-tighter">Riwayat Konseling</h3>
+              <p class="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">Manajemen & Monitoring Sesi</p>
+            </div>
+            
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left min-w-[700px]" id="counselingTable">
+            <thead class="bg-slate-50 text-slate-400 text-[10px] font-black uppercase tracking-widest border-b border-slate-100">
+              <tr>
+                <th class="px-8 py-5">Sesi ID</th>
+                {% if session.get('role') == 'admin_pikr' %}
+                <th class="px-8 py-5">Remaja</th>
+                <th class="px-8 py-5">Konselor</th>
+                {% else %}
+                <th class="px-8 py-5">Lawan Bicara</th>
+                {% endif %}
+                <th class="px-8 py-5">Topik & Jadwal</th>
+                <th class="px-8 py-5 text-center">Status</th>
+                <th class="px-8 py-5 text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-50">
+              {% for s in sessions %}
+              <tr class="hover:bg-pink-50/30 transition-colors group session-row" data-status="{{ s.status|upper }}">
+                <td class="px-8 py-6">
+                    <span class="text-xs font-black text-pink-600 bg-pink-50 px-3 py-1 rounded-lg">#{{ s.session_id }}</span>
+                </td>
+                
+                {% if session.get('role') == 'admin_pikr' %}
+                  <td class="px-8 py-6">
+                      <div class="font-black text-slate-800 text-sm search-target">{{ s.member_name }}</div>
+                      <div class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Remaja</div>
+                  </td>
+                  <td class="px-8 py-6">
+                      <div class="font-black text-slate-800 text-sm search-target">{{ s.counselor_name }}</div>
+                      <div class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Konselor</div>
+                  </td>
+                {% else %}
+                  <td class="px-8 py-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 bg-slate-800 rounded-xl flex items-center justify-center text-xs font-bold text-white uppercase">{{ (s.counselor_name if session.get('role') == 'anggota_remaja' else s.member_name)[0] }}</div>
+                        <div class="font-black text-slate-800 text-sm group-hover:text-pink-600 transition-colors search-target">
+                          {{ s.counselor_name if session.get('role') == 'anggota_remaja' else s.member_name }}
+                        </div>
+                    </div>
+                  </td>
+                {% endif %}
+  
+                <td class="px-8 py-6">
+                  <div class="font-bold text-slate-700 text-xs search-target">{{ s.topic }}</div>
+                  <div class="text-[10px] text-slate-400 mt-1 font-medium tracking-wide">📅 {{ s.date }} • 🕒 {{ s.time }} WIB</div>
+                </td>
+                <td class="px-8 py-6 text-center">
+                  <span class="status-badge px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm
+                    {% if s.status|lower == 'approved' %} bg-emerald-100 text-emerald-700
+                    {% elif s.status|lower == 'pending' %} bg-amber-100 text-amber-700
+                    {% else %} bg-rose-100 text-rose-700 {% endif %}">
+                    {{ s.status|upper }}
+                  </span>
+
+                  {# BADGE PRIORITAS/EMERGENCY #}
+                  {% if s.priority == 'emergency' %}
+                    <div class="mt-2 flex items-center justify-center gap-1.5 px-3 py-1 bg-rose-600 text-white rounded-full text-[8px] font-black tracking-tighter animate-pulse shadow-lg shadow-rose-200">
+                        <span class="w-1.5 h-1.5 bg-white rounded-full"></span> DARURAT
+                    </div>
+                  {% elif s.priority == 'high' %}
+                    <div class="mt-2 flex items-center justify-center gap-1.5 px-3 py-1 bg-amber-500 text-white rounded-full text-[8px] font-black tracking-tighter shadow-lg shadow-amber-100">
+                        <span class="w-1.5 h-1.5 bg-white rounded-full"></span> PRIORITAS
+                    </div>
+                  {% endif %}
+                </td>
+                <td class="px-8 py-6">
+                  <div class="flex justify-center items-center gap-3">
+                    {% set partner = s.counselor_name if session.get('role') == 'anggota_remaja' else s.member_name %}
+                    
+                    {# PRIMARY ACTION #}
+                    <div class="flex items-center gap-2">
+                        {% if session.get('role') == 'konselor' and s.status|lower == 'pending' %}
+                          <div class="flex gap-2">
+                            <a href="{{ url_for('approve_session', session_id=s.session_id) }}" 
+                               class="bg-emerald-600 text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-md">✓ Setuju</a>
+                            <a href="{{ url_for('reject_session', session_id=s.session_id) }}" 
+                               class="bg-rose-600 text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-rose-700 transition-all shadow-md">✕ Tolak</a>
+                          </div>
+                        {% else %}
+                          <a href="{{ url_for('chat', receiver_username=partner) }}" 
+                             class="bg-pink-600 text-white px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-pink-700 transition-all shadow-lg shadow-pink-100 flex items-center gap-2">
+                             <span>💬</span> Chat
+                          </a>
+                        {% endif %}
+                    </div>
+
+                    {# SECONDARY ACTIONS (ELLIPSIS) - ALWAYS VISIBLE #}
+                    <div class="relative">
+                      <button onclick="toggleSessionMenu('{{ s.session_id }}')" class="w-9 h-9 flex items-center justify-center bg-slate-50 text-slate-400 rounded-xl hover:bg-slate-100 transition-all border border-slate-100">
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
+                      </button>
+                      <div id="sessionMenu-{{ s.session_id }}" class="hidden absolute right-full mr-3 top-0 w-56 bg-white rounded-2xl shadow-2xl border border-pink-50 z-[100] overflow-hidden animate-fade-in text-left">
+                          <div class="px-5 py-3 border-b border-slate-50 bg-slate-50/50">
+                              <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Opsi Sesi #{{ s.session_id }}</p>
+                          </div>
+                          <div class="py-2">
+                              <button type="button" onclick="openEditModal('{{ s.session_id }}', '{{ s.topic or '' }}', '{{ s.date }}', '{{ s.time }}', '{{ s.status }}')" 
+                                      class="w-full flex items-center gap-3 px-5 py-3 text-sm text-slate-600 font-bold hover:bg-pink-50 transition-colors">
+                                  <span class="text-lg">✏️</span> Reschedule
+                              </button>
+
+                              <button type="button" onclick="navigator.clipboard.writeText('{{ s.session_id }}'); showToast('ID sesi disalin!')" 
+                                      class="w-full flex items-center gap-3 px-5 py-3 text-sm text-slate-500 font-bold hover:bg-slate-50 transition-colors">
+                                  <span class="text-lg">📋</span> Salin Sesi ID
+                              </button>
+
+                              <div class="border-t border-slate-50 mt-2 pt-2">
+                                  <a href="{{ url_for('delete_session', session_id=s.session_id) }}" 
+                                     onclick="return confirm('Hapus riwayat sesi ini secara permanen?')" 
+                                     class="flex items-center gap-3 px-5 py-3 text-sm text-red-600 font-black hover:bg-red-50 transition-colors">
+                                      <span class="text-lg">🗑️</span> Hapus Sesi
+                                  </a>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              {% else %}
+              <tr>
+                <td colspan="6" class="px-8 py-20 text-center">
+                    <div class="text-4xl mb-4 opacity-20">🛋️</div>
+                    <p class="text-sm font-bold text-slate-400 italic">Belum ada riwayat konseling yang tercatat.</p>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{# MODAL EDIT ADMIN PREMIUM #}
+<div id="modalEdit" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+  <div class="premium-card bg-white rounded-[2.5rem] w-full max-w-md p-10 shadow-3xl animate-fade-in relative overflow-hidden">
+    <div class="absolute -right-20 -top-20 w-48 h-48 bg-blue-50 rounded-full opacity-30"></div>
+    <div class="relative z-10">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h3 class="text-2xl font-black text-slate-800 tracking-tighter">Edit Sesi #<span id="displayId"></span></h3>
+                <p class="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mt-1">Manajemen Administrasi</p>
+            </div>
+            <button onclick="document.getElementById('modalEdit').classList.add('hidden')" class="w-10 h-10 flex items-center justify-center bg-slate-100 rounded-2xl text-slate-400 hover:bg-rose-600 hover:text-white transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <form id="formEdit" method="POST" class="space-y-6">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-[0.2em]">Tanggal</label>
+              <input type="date" name="date" id="editDate" class="w-full bg-slate-50 border border-slate-200 p-4 rounded-2xl outline-none focus:ring-2 focus:ring-pink-500 text-sm" />
+            </div>
+            <div>
+              <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-[0.2em]">Waktu</label>
+              <input type="time" name="time" id="editTime" class="w-full bg-slate-50 border border-slate-200 p-4 rounded-2xl outline-none focus:ring-2 focus:ring-pink-500 text-sm" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-[0.2em]">Status Konseling</label>
+            <select name="status" id="editStatus" class="w-full bg-slate-50 border border-slate-200 p-4 rounded-2xl outline-none focus:ring-2 focus:ring-pink-500 text-sm font-bold text-slate-700">
+              <option value="pending">🟡 PENDING</option>
+              <option value="approved">🟢 APPROVED</option>
+              <option value="rejected">🔴 REJECTED</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-premium w-full text-white py-4 rounded-2xl font-bold text-sm shadow-xl mt-4">Simpan Perubahan &rarr;</button>
+        </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openEditModal(id, topic, date, time, status) {
+    document.getElementById("formEdit").action = "/edit_session/" + id;
+    document.getElementById("displayId").innerText = id;
+    document.getElementById("editDate").value = date;
+    document.getElementById("editTime").value = time;
+    document.getElementById("editStatus").value = status.toLowerCase();
+    document.getElementById("modalEdit").classList.remove("hidden");
+  }
+
+  function toggleSessionMenu(id) {
+    const menu = document.getElementById('sessionMenu-' + id);
+    document.querySelectorAll('[id^="sessionMenu-"]').forEach(m => {
+        if (m.id !== 'sessionMenu-' + id) m.classList.add('hidden');
+    });
+    menu.classList.toggle('hidden');
+  }
+
+  window.addEventListener('click', (e) => {
+    if (!e.target.closest('.relative')) {
+        document.querySelectorAll('[id^="sessionMenu-"]').forEach(m => m.classList.add('hidden'));
+    }
+  });
+
+    {% endif %}
+</script>
+{% endblock %}

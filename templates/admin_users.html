@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="space-y-8 fade-in">
+    <div class="flex justify-between items-center border-b pb-4">
+        <div>
+            <h2 class="text-3xl font-bold text-pink-800">Kelola Pengguna Sistem</h2>
+            <p class="text-gray-500 text-sm">Total Pengguna: {{ users|length }}</p>
+        </div>
+        <button onclick="toggleUserModal()" class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+            Tambah User
+        </button>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <table class="w-full text-left border-collapse">
+            <thead class="bg-pink-600 text-white text-[11px] font-bold uppercase tracking-wider">
+                <tr>
+                    <th class="px-6 py-4">Username</th>
+                    <th class="px-6 py-4">Role / Jabatan</th>
+                    <th class="px-6 py-4 text-center">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                {% for user in users %}
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="px-6 py-4 flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center font-bold text-xs">
+                            {{ user.username[0]|upper }}
+                        </div>
+                        <span class="font-medium text-gray-700">{{ user.username }}</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 rounded-full text-[10px] font-bold 
+                            {% if user.role == 'admin_pikr' %} bg-purple-100 text-purple-700
+                            {% elif user.role == 'anggota_remaja' %} bg-green-100 text-green-700
+                            {% else %} bg-fuchsia-100 text-fuchsia-700 {% endif %}">
+                            {{ user.role|upper }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        {% if user.username == session['username'] %}
+                        <span class="text-gray-400 italic text-xs">Akun Anda</span>
+                        {% else %}
+                        <a href="{{ url_for('delete_user', role=user.role, user_id=user.id) }}" 
+                        onclick="return confirm('Yakin ingin menghapus user ini?')"
+                        class="bg-red-100 text-red-600 px-3 py-1 rounded-lg hover:bg-red-200 transition">
+                        Hapus
+                        </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="userModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl scale-in">
+        <h3 class="text-xl font-bold mb-4 text-pink-800">Tambah Pengguna Baru</h3>
+        <form action="{{ url_for('admin_users') }}" method="POST" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">USERNAME</label>
+                <input type="text" name="username" required class="w-full border p-2.5 rounded-lg focus:ring-2 focus:ring-pink-500 outline-none" placeholder="Masukkan username...">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">PASSWORD</label>
+                <input type="password" name="password" required class="w-full border p-2.5 rounded-lg focus:ring-2 focus:ring-pink-500 outline-none" placeholder="********">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">ROLE / PERAN</label>
+                <select name="role" class="w-full border p-2.5 rounded-lg focus:ring-2 focus:ring-pink-500 outline-none">
+                    <option value="anggota_remaja">Anggota Remaja</option>
+                    <option value="konselor">Konselor Sebaya</option>
+                    <option value="admin_pikr">Admin PIK-R SERASI</option>
+                </select>
+            </div>
+            <div class="flex gap-3 pt-4">
+                <button type="button" onclick="toggleUserModal()" class="flex-1 bg-gray-100 hover:bg-gray-200 py-2.5 rounded-lg font-bold transition">Batal</button>
+                <button type="submit" class="flex-1 bg-pink-600 hover:bg-pink-700 text-white py-2.5 rounded-lg font-bold transition">Simpan User</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function toggleUserModal() {
+        const modal = document.getElementById('userModal');
+        modal.classList.toggle('hidden');
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  .event-desc-content {
+      text-align: justify;
+      text-justify: inter-word;
+      line-height: 1.85;
+      color: #334155; /* text-slate-700 */
+      font-size: 0.95rem;
+  }
+</style>
+<div class="max-w-3xl mx-auto py-8 px-4">
+
+  <!-- Back Button -->
+  <a href="{{ url_for('education_event', tab='event') }}"
+     class="inline-flex items-center gap-2 text-xs font-black text-slate-500 hover:text-pink-600 uppercase tracking-widest mb-8 transition-colors group">
+    <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+    </svg>
+    Kembali ke Kegiatan
+  </a>
+
+  <!-- Event Card -->
+  <div class="premium-card rounded-[2.5rem] overflow-hidden mb-8 bg-white border border-slate-100/80 shadow-2xl">
+    {% if ev.foto_list %}
+    <!-- Slideshow Carousel -->
+    <div class="relative w-full h-64 md:h-96 overflow-hidden group/slideshow bg-slate-900">
+      <div id="slideshow-container" class="w-full h-full flex transition-transform duration-500 ease-out">
+        {% for foto in ev.foto_list %}
+        <div class="w-full h-full flex-shrink-0">
+          <img src="{{ url_for('static', filename='uploads/' + foto) }}" alt="{{ ev.title }}" class="w-full h-full object-cover">
+        </div>
+        {% endfor %}
+      </div>
+      
+      <!-- Gradient overlay -->
+      <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/10 to-transparent pointer-events-none"></div>
+
+      <!-- Navigation Arrows -->
+      {% if ev.foto_list | length > 1 %}
+      <button onclick="moveSlide(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/60 hover:scale-105 transition-all opacity-0 group-hover/slideshow:opacity-100 z-30">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+      <button onclick="moveSlide(1)" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/60 hover:scale-105 transition-all opacity-0 group-hover/slideshow:opacity-100 z-30">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+      </button>
+
+      <!-- Dot Indicators -->
+      <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+        {% for foto in ev.foto_list %}
+        <button onclick="setSlide({{ loop.index0 }})" class="slideshow-dot w-2 h-2 rounded-full bg-white/50 hover:bg-white transition-all {{ 'bg-white scale-125' if loop.first else '' }}"></button>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+    <div class="p-8 md:p-12">
+
+      <!-- Badge -->
+      <div class="flex items-center gap-3 mb-6">
+        <span class="bg-indigo-100 text-indigo-700 text-[9px] font-black px-3 py-1.5 rounded-full uppercase tracking-[0.15em]">
+          📅 Upcoming Event
+        </span>
+        {% if ev.author %}
+        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">oleh {{ ev.author }}</span>
+        {% endif %}
+      </div>
+
+      <!-- Title -->
+      <h1 class="text-4xl font-black text-slate-800 tracking-tighter leading-tight mb-8">{{ ev.title }}</h1>
+
+      <!-- Date & Time Grid -->
+      <div class="grid grid-cols-2 gap-4 mb-8">
+        <div class="bg-slate-50 p-5 rounded-3xl border border-slate-100">
+          <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">📆 Tanggal</p>
+          <p class="text-sm font-black text-slate-700">{{ ev.date }}</p>
+        </div>
+        <div class="bg-slate-50 p-5 rounded-3xl border border-slate-100">
+          <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">⏰ Waktu</p>
+          <p class="text-sm font-black text-slate-700">{{ ev.time }} WIB</p>
+        </div>
+      </div>
+
+      <!-- Full Description -->
+      <div class="mb-8">
+        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Deskripsi Kegiatan</p>
+        <div class="event-desc-content whitespace-pre-wrap bg-slate-50/50 p-8 rounded-3xl border border-slate-100 shadow-inner">
+          {{ ev.description }}
+        </div>
+      </div>
+
+      <!-- Admin Controls -->
+      {% if session.get('role') == 'admin_pikr' or (session.get('role') == 'konselor' and ev.author == session.get('username')) %}
+      <div class="flex gap-3 pt-6 border-t border-slate-100">
+        <a href="{{ url_for('education_event', tab='event') }}?edit_id={{ ev.id }}"
+           class="flex items-center gap-2 px-5 py-3 bg-blue-50 text-blue-600 rounded-2xl text-xs font-black hover:bg-blue-600 hover:text-white transition-all shadow-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+          </svg>
+          Edit Kegiatan
+        </a>
+        <a href="{{ url_for('delete_event', event_id=ev.id) }}"
+           onclick="return confirm('Hapus kegiatan ini secara permanen?')"
+           class="flex items-center gap-2 px-5 py-3 bg-rose-50 text-rose-600 rounded-2xl text-xs font-black hover:bg-rose-600 hover:text-white transition-all shadow-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3"/>
+          </svg>
+          Hapus Kegiatan
+        </a>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+
+  <!-- Participants & Join Section -->
+  <div class="premium-card rounded-[2.5rem] p-8 md:p-10">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 class="text-xl font-black text-slate-800">Peserta Terdaftar</h2>
+        <p class="js-participant-count text-xs text-slate-400 font-bold mt-1">{{ ev.participants | length }} orang bergabung</p>
+      </div>
+      <!-- Avatar Stack -->
+      <div id="js-avatar-stack" class="flex -space-x-2">
+        {% for p in ev.participants[:5] %}
+        <div class="w-10 h-10 rounded-full border-2 border-white bg-slate-200 flex items-center justify-center text-xs font-black text-slate-600 uppercase shadow-sm" title="{{ p }}">
+          {{ p[0] | upper }}
+        </div>
+        {% endfor %}
+        {% if ev.participants | length > 5 %}
+        <div class="w-10 h-10 rounded-full border-2 border-white bg-pink-100 flex items-center justify-center text-xs font-black text-pink-600 shadow-sm">
+          +{{ ev.participants | length - 5 }}
+        </div>
+        {% endif %}
+        {% if ev.participants | length == 0 %}
+        <div class="text-sm text-slate-400 font-bold italic">Belum ada peserta</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Participants List -->
+    <div id="js-participant-chips" class="flex flex-wrap gap-2 mb-8">
+      {% if ev.participants %}
+        {% for p in ev.participants %}
+        <span class="bg-slate-100 text-slate-600 text-xs font-black px-3 py-1.5 rounded-full uppercase tracking-wide">
+          {{ p }}
+        </span>
+        {% endfor %}
+      {% else %}
+        <div class="py-6 text-center text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200 w-full">
+          <p class="text-sm font-bold italic">Jadilah yang pertama mendaftar! 🎉</p>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Join / Leave Button -->
+    {% if session.get('role') == 'anggota_remaja' %}
+      {% if session.get('username') in ev.participants %}
+      <div class="space-y-3">
+        <div class="w-full bg-emerald-50 text-emerald-600 font-black py-4 rounded-2xl text-xs uppercase tracking-[0.2em] text-center border border-emerald-200">
+          ✓ Kamu Sudah Terdaftar
+        </div>
+        <a href="{{ url_for('leave_event', event_id=ev.id) }}"
+           onclick="return confirm('Yakin mau batal ikuti kegiatan ini?')"
+           class="block w-full text-rose-400 hover:text-rose-600 text-center font-black py-2 text-xs uppercase tracking-[0.2em] transition-colors">
+          ✕ Batal Ikuti
+        </a>
+      </div>
+      {% else %}
+      <a href="{{ url_for('join_event', event_id=ev.id) }}"
+         class="btn-premium block w-full text-white text-center font-black py-4 rounded-2xl text-sm uppercase tracking-[0.2em] shadow-xl hover:scale-105 transition-transform">
+        🙋 Ikuti Kegiatan Ini
+      </a>
+      {% endif %}
+    {% elif not session.get('user_id') %}
+    <a href="{{ url_for('login') }}"
+       class="btn-premium block w-full text-white text-center font-black py-4 rounded-2xl text-sm uppercase tracking-[0.2em] shadow-xl">
+      Login untuk Mendaftar
+    </a>
+    {% endif %}
+  </div>
+
+</div>
+
+<script>
+  // ── Real-time participant polling ──────────────────────────────────────────
+  const EVENT_ID   = {{ ev.id }};
+  const MY_USER    = "{{ session.get('username', '') }}";
+  const POLL_MS    = 5000; // setiap 5 detik
+
+  function updateParticipants(data) {
+    const count  = data.count;
+    const names  = data.participants;
+
+    // Update jumlah teks
+    document.querySelectorAll('.js-participant-count').forEach(el => {
+      el.textContent = `${count} orang bergabung`;
+    });
+
+    // Update avatar stack
+    const stack = document.getElementById('js-avatar-stack');
+    if (!stack) return;
+    stack.innerHTML = '';
+
+    const visible = names.slice(0, 5);
+    visible.forEach(name => {
+      const div = document.createElement('div');
+      div.className = 'w-10 h-10 rounded-full border-2 border-white bg-slate-200 flex items-center justify-center text-xs font-black text-slate-600 uppercase shadow-sm';
+      div.title    = name;
+      div.textContent = name[0].toUpperCase();
+      stack.appendChild(div);
+    });
+
+    if (count > 5) {
+      const extra = document.createElement('div');
+      extra.className = 'w-10 h-10 rounded-full border-2 border-white bg-pink-100 flex items-center justify-center text-xs font-black text-pink-600 shadow-sm';
+      extra.textContent = `+${count - 5}`;
+      stack.appendChild(extra);
+    }
+
+    // Update daftar nama chips
+    const chips = document.getElementById('js-participant-chips');
+    if (chips) {
+      if (names.length === 0) {
+        chips.innerHTML = `<div class="py-6 text-center text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200 w-full">
+          <p class="text-sm font-bold italic">Jadilah yang pertama mendaftar! 🎉</p></div>`;
+      } else {
+        chips.innerHTML = names.map(n =>
+          `<span class="bg-slate-100 text-slate-600 text-xs font-black px-3 py-1.5 rounded-full uppercase tracking-wide">${n}</span>`
+        ).join('');
+      }
+    }
+  }
+
+  function poll() {
+    fetch(`/api/event/${EVENT_ID}/participants`)
+      .then(r => r.json())
+      .then(data => updateParticipants(data))
+      .catch(() => {}); // silent fail jika offline
+  }
+
+  // Mulai polling
+  setInterval(poll, POLL_MS);
+
+  // Slideshow Logic
+  let currentSlide = 0;
+  const totalSlides = {{ (ev.foto_list | length) if ev.foto_list else 0 }};
+  const container = document.getElementById('slideshow-container');
+  const dots = document.querySelectorAll('.slideshow-dot');
+
+  function updateSlideshow() {
+    if (!container) return;
+    container.style.transform = `translateX(-${currentSlide * 100}%)`;
+    dots.forEach((dot, idx) => {
+      if (idx === currentSlide) {
+        dot.classList.add('bg-white', 'scale-125');
+        dot.classList.remove('bg-white/50');
+      } else {
+        dot.classList.remove('bg-white', 'scale-125');
+        dot.classList.add('bg-white/50');
+      }
+    });
+  }
+
+  window.moveSlide = function(dir) {
+    if (totalSlides === 0) return;
+    currentSlide = (currentSlide + dir + totalSlides) % totalSlides;
+    updateSlideshow();
+  }
+
+  window.setSlide = function(idx) {
+    currentSlide = idx;
+    updateSlideshow();
+  }
+
+  // Auto-play every 5 seconds
+  if (totalSlides > 1) {
+    setInterval(() => {
+      window.moveSlide(1);
+    }, 5000);
+  }
+</script>
+{% endblock %}

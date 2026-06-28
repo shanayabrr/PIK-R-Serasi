@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  .innovation-content p {
+      margin-bottom: 1.25rem;
+      text-align: justify;
+      text-justify: inter-word;
+      line-height: 1.85;
+      color: #334155; /* text-slate-700 */
+      font-size: 0.95rem;
+  }
+  .innovation-content p:last-child { margin-bottom: 0; }
+  .innovation-content strong, .innovation-content b { color: #1e293b; font-weight: 800; }
+  .innovation-content ul, .innovation-content ol {
+      margin-left: 1.5rem;
+      margin-bottom: 1.25rem;
+      list-style-type: disc;
+      line-height: 1.8;
+  }
+  .innovation-content li {
+      margin-bottom: 0.5rem;
+  }
+</style>
+<div class="max-w-3xl mx-auto py-8 px-4">
+
+  <!-- Back Button -->
+  <a href="{{ url_for('innovations') }}"
+     class="inline-flex items-center gap-2 text-xs font-black text-slate-500 hover:text-[#8b6e50] uppercase tracking-widest mb-8 transition-colors group">
+    <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+    </svg>
+    Kembali ke Inovasi & Proker
+  </a>
+
+  <!-- Main Content Card -->
+  <div class="premium-card rounded-[2.5rem] overflow-hidden mb-8">
+    <div class="p-8 md:p-12">
+
+      <!-- Badge Row -->
+      <div class="flex items-center gap-3 mb-6 flex-wrap">
+        <span class="bg-[#FBE1B3] text-[#4A2C11] text-[9px] font-black px-3 py-1.5 rounded-full uppercase tracking-[0.15em]">
+          💡 Program Kerja
+        </span>
+        {% if innovation.author %}
+        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">oleh {{ innovation.author }}</span>
+        {% endif %}
+        {% if innovation.dokumen %}
+        <a href="{{ url_for('static', filename='uploads/' ~ innovation.dokumen) }}"
+           download
+           class="ml-auto flex items-center gap-1.5 bg-[#4A2C11] text-white text-[10px] font-black px-4 py-2 rounded-2xl hover:bg-[#3D2511] transition-all uppercase tracking-wider shadow-sm">
+          📎 Unduh Lampiran
+        </a>
+        {% endif %}
+      </div>
+
+      <!-- Title -->
+      <h1 class="text-4xl font-black text-slate-800 tracking-tighter leading-tight mb-8">{{ innovation.title }}</h1>
+
+      <!-- Meta Grid -->
+      <div class="grid grid-cols-2 gap-4 mb-8">
+        <div class="bg-slate-50 p-5 rounded-3xl border border-slate-100">
+          <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">✍️ Penulis</p>
+          <p class="text-sm font-black text-slate-700">{{ innovation.author }}</p>
+        </div>
+        <div class="bg-slate-50 p-5 rounded-3xl border border-slate-100">
+          <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">📅 Tanggal</p>
+          <p class="text-sm font-black text-slate-700">{{ innovation.date }}</p>
+        </div>
+      </div>
+
+      <!-- Article Body -->
+      <div class="mb-8">
+        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Deskripsi Program</p>
+        <div class="innovation-content bg-slate-50/50 p-8 rounded-3xl border border-slate-100 shadow-inner">
+          {{ innovation.content|safe }}
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Reviews & Rating Section -->
+  <div class="premium-card rounded-[2.5rem] p-8 md:p-10">
+
+    <!-- Section Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 class="text-xl font-black text-slate-800">Ulasan & Rating</h2>
+        <p class="text-xs text-slate-400 font-bold mt-1">
+          {% if innovation.comments %}
+            {{ innovation.comments | length }} ulasan diberikan
+          {% else %}
+            Belum ada ulasan
+          {% endif %}
+        </p>
+      </div>
+      <!-- Average Stars Display -->
+      {% if innovation.comments %}
+      {% set avg = (innovation.comments | map(attribute='rating') | list | sum) / (innovation.comments | length) %}
+      <div class="flex items-center gap-2 bg-amber-50 border border-amber-100 px-4 py-2 rounded-2xl">
+        <span class="text-amber-500 font-black text-base">⭐</span>
+        <span class="text-sm font-black text-amber-700">{{ "%.1f"|format(avg) }}</span>
+        <span class="text-[10px] text-amber-500 font-bold">/ 5</span>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Review List -->
+    <div class="space-y-4 mb-8">
+      {% for comment in innovation.comments %}
+      <div class="bg-slate-50/80 p-5 rounded-2xl border border-slate-100 group/comment relative">
+        <div class="flex items-start gap-4">
+          <!-- Avatar -->
+          <div class="flex-shrink-0 w-10 h-10 bg-[#FBE1B3] rounded-2xl flex items-center justify-center font-black text-[#4A2C11] text-base shadow-sm">
+            {{ comment.username[0]|upper }}
+          </div>
+          <!-- Content -->
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between mb-2 gap-2 flex-wrap">
+              <div class="flex items-center gap-2">
+                <span class="font-black text-slate-800 text-sm">{{ comment.username }}</span>
+                <span class="bg-amber-100 text-amber-700 font-black text-[9px] px-2 py-0.5 rounded-lg uppercase">
+                  ⭐ {{ comment.rating }}
+                </span>
+              </div>
+              <!-- Admin / Own Controls -->
+              <div class="flex gap-2 opacity-0 group-hover/comment:opacity-100 transition-opacity">
+                {% if comment.username == session.get('username') %}
+                <button onclick="openEditInnovationComment('{{ innovation.id }}','{{ comment.id }}','{{ comment.text }}')"
+                        class="text-blue-500 hover:text-blue-700 text-[9px] font-black uppercase tracking-widest transition-colors">
+                  Edit
+                </button>
+                {% endif %}
+                {% if session.get('role') == 'admin_pikr' or comment.username == session.get('username') %}
+                <a href="{{ url_for('delete_innovation_comment', inn_id=innovation.id, comment_id=comment.id) }}"
+                   onclick="return confirm('Hapus ulasan ini?')"
+                   class="text-red-500 hover:text-red-700 text-[9px] font-black uppercase tracking-widest transition-colors">
+                  Hapus
+                </a>
+                {% endif %}
+              </div>
+            </div>
+            <!-- Star Row -->
+            <div class="flex items-center gap-0.5 mb-2">
+              {% for i in range(1, 6) %}
+                {% if i <= comment.rating %}
+                  <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.165c.969 0 1.371 1.24.588 1.81l-3.374 2.455a1 1 0 00-.364 1.118l1.287 3.956c.3.921-.755 1.688-1.54 1.118L10 15.347l-3.374 2.455c-.784.57-1.84-.197-1.54-1.118l1.287-3.956a1 1 0 00-.364-1.118L2.635 9.384c-.783-.57-.38-1.81.588-1.81h4.165a1 1 0 00.95-.69l1.286-3.957z"/>
+                  </svg>
+                {% else %}
+                  <svg class="w-3.5 h-3.5 text-slate-200" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.165c.969 0 1.371 1.24.588 1.81l-3.374 2.455a1 1 0 00-.364 1.118l1.287 3.956c.3.921-.755 1.688-1.54 1.118L10 15.347l-3.374 2.455c-.784.57-1.84-.197-1.54-1.118l1.287-3.956a1 1 0 00-.364-1.118L2.635 9.384c-.783-.57-.38-1.81.588-1.81h4.165a1 1 0 00.95-.69l1.286-3.957z"/>
+                  </svg>
+                {% endif %}
+              {% endfor %}
+            </div>
+            {% if comment.text %}
+            <p class="text-slate-500 italic text-sm leading-relaxed">"{{ comment.text }}"</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <!-- Empty State -->
+      <div class="py-10 text-center text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+        <div class="text-4xl mb-3">💬</div>
+        <p class="text-sm font-bold italic">Belum ada ulasan untuk program ini.</p>
+        <p class="text-xs text-slate-300 mt-1">Jadilah yang pertama memberi ulasan!</p>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Add Review Form (logged-in members) -->
+    {% if session.get('user_id') %}
+    <form action="{{ url_for('add_innovation_comment', inn_id=innovation.id) }}" method="post"
+          class="border-t border-slate-100 pt-8">
+      <h3 class="text-sm font-black text-slate-700 uppercase tracking-widest mb-5">Tambahkan Ulasan</h3>
+
+      <!-- Rating Select -->
+      <div class="mb-4">
+        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Rating</label>
+        <div class="flex gap-2 flex-wrap">
+          {% for val, label in [('5','5 — Sangat Baik'), ('4','4 — Baik'), ('3','3 — Cukup'), ('2','2 — Kurang'), ('1','1 — Buruk')] %}
+          <label class="cursor-pointer">
+            <input type="radio" name="rating" value="{{ val }}" class="sr-only peer" {% if val == '5' %}checked{% endif %}>
+            <span class="inline-flex items-center gap-1 px-4 py-2 rounded-2xl border border-slate-200 text-xs font-black text-slate-500
+                         peer-checked:bg-amber-400 peer-checked:text-white peer-checked:border-amber-400
+                         hover:border-amber-300 transition-all">
+              ⭐ {{ val }}
+            </span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Comment Textarea -->
+      <div class="mb-5">
+        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Komentar (Opsional)</label>
+        <textarea name="comment" rows="3"
+                  class="w-full text-sm p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-[#4A2C11]/30 focus:border-[#4A2C11] focus:bg-white transition-all resize-none"
+                  placeholder="Bagikan pendapatmu tentang program ini..."></textarea>
+      </div>
+
+      <button type="submit"
+              class="btn-premium w-full text-white font-black py-4 rounded-2xl text-sm uppercase tracking-[0.2em] shadow-xl hover:scale-[1.02] transition-transform">
+        Kirim Ulasan
+      </button>
+    </form>
+
+    {% else %}
+    <!-- Not Logged In -->
+    <div class="border-t border-slate-100 pt-8">
+      <a href="{{ url_for('login') }}"
+         class="btn-premium block w-full text-white text-center font-black py-4 rounded-2xl text-sm uppercase tracking-[0.2em] shadow-xl">
+        Login untuk Memberi Ulasan
+      </a>
+    </div>
+    {% endif %}
+
+  </div><!-- /reviews card -->
+
+</div>
+{% endblock %}

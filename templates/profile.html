@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-12 px-6 fade-in">
+    <div class="flex flex-col md:flex-row gap-10 items-start">
+        
+        {# LEFT SIDE: AVATAR & BASIC INFO #}
+        <div class="w-full md:w-1/3 text-center space-y-6">
+            <div class="relative inline-block group">
+                <div class="w-40 h-40 rounded-[2.5rem] bg-slate-100 border-4 border-white shadow-2xl overflow-hidden relative">
+                    {% if user.profile_pic %}
+                        <img src="{{ url_for('static', filename=user.profile_pic.replace('static/', '')) }}" class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full flex items-center justify-center text-5xl font-black text-slate-300 bg-slate-50 uppercase">
+                            {{ user.username[0] }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="absolute -bottom-2 -right-2 w-12 h-12 bg-pink-600 text-white rounded-2xl flex items-center justify-center shadow-xl border-4 border-white">
+                    ✨
+                </div>
+            </div>
+            
+            <div>
+                <h2 class="text-2xl font-black text-slate-800 tracking-tighter">{{ user.username }}</h2>
+                <p class="text-slate-400 font-bold uppercase tracking-widest text-[10px] mt-1">{{ user.role.replace('_', ' ') }}</p>
+            </div>
+            
+            <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm text-left">
+                <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-3">Bio Singkat</p>
+                <p class="text-sm text-slate-500 italic">"{{ user.bio or 'Belum ada bio...' }}"</p>
+            </div>
+        </div>
+
+        {# RIGHT SIDE: EDIT FORM #}
+        <div class="w-full md:w-2/3">
+            <div class="bg-white rounded-[3rem] shadow-xl p-10 border border-slate-100">
+                <h3 class="text-2xl font-black text-slate-800 tracking-tighter mb-8">Pengaturan Profil</h3>
+                
+                <form action="{{ url_for('profile') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
+                    
+                    {# UPLOAD PHOTO #}
+                    <div>
+                        <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Ganti Foto Profil</label>
+                        <div class="flex items-center gap-6">
+                            <label class="cursor-pointer bg-slate-50 hover:bg-slate-100 border border-dashed border-slate-300 px-8 py-4 rounded-2xl text-slate-500 font-bold text-xs transition-all flex items-center gap-3">
+                                📁 Pilih File...
+                                <input type="file" name="profile_pic" class="hidden" accept="image/*">
+                            </label>
+                            <p class="text-[10px] text-slate-400 italic">JPG, PNG (Maks 2MB)</p>
+                        </div>
+                    </div>
+
+                    {# BIO #}
+                    <div>
+                        <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Bio Singkat</label>
+                        <textarea name="bio" rows="3" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm focus:ring-2 focus:ring-pink-500 transition-all font-medium text-slate-700" placeholder="Ceritakan sedikit tentang dirimu...">{{ user.bio or '' }}</textarea>
+                    </div>
+
+                    {# PASSWORD #}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Ganti Password</label>
+                            <input type="password" name="password" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm focus:ring-2 focus:ring-pink-500 transition-all font-medium text-slate-700" placeholder="••••••••">
+                        </div>
+                        <div class="flex items-end">
+                            <p class="text-[10px] text-slate-400 italic mb-4">*Kosongkan jika tidak ingin mengganti password.</p>
+                        </div>
+                    </div>
+
+                    <div class="pt-6 border-t border-slate-50 flex gap-4">
+                        <button type="submit" class="btn-premium text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl flex-1">
+                            Simpan Perubahan
+                        </button>
+                        <a href="{{ url_for('dashboard') }}" class="px-10 py-4 rounded-2xl font-black uppercase tracking-widest text-xs border border-slate-100 text-slate-400 hover:bg-slate-50 transition-all">
+                            Batal
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto fade-in">
+
+    <!-- ====== HEADER ====== -->
+    <div class="relative mb-12 pt-2">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div>
+                <div class="inline-flex items-center gap-2 bg-[#FBE1B3]/60 border border-[#d8c5a3]/40 px-4 py-2 rounded-full mb-4">
+                    <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                    <span class="text-[10px] font-black text-[#4A2C11] uppercase tracking-[0.25em]">Live Community</span>
+                </div>
+                <h1 class="text-5xl font-black text-slate-800 tracking-tighter leading-[1.05]">
+                    Forum <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#8b6e50] to-[#4A2C11]">&amp; Pengumuman</span>
+                </h1>
+                <p class="text-slate-500 mt-3 font-medium text-base">Ruang berbagi cerita dan informasi resmi PIK-R SERASI.</p>
+            </div>
+            <div class="flex gap-2 flex-shrink-0">
+                <span class="bg-[#FBE1B3]/60 text-[#4A2C11] border border-[#d8c5a3]/40 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest">#Community</span>
+                <span class="bg-blue-50 text-blue-700 border border-blue-100 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest">#Support</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== POST COMPOSER ====== -->
+    <div class="bg-white border border-slate-100 rounded-[2.5rem] p-8 mb-10 shadow-sm">
+        {% if session.get('user_id') %}
+        <div class="flex items-center gap-3 mb-5">
+            <div class="w-10 h-10 bg-[#4A2C11] rounded-2xl flex items-center justify-center font-black text-white text-sm uppercase">
+                {{ session.get('username', '?')[0] }}
+            </div>
+            <div>
+                <p class="text-sm font-black text-slate-800">{{ session.get('username') }}</p>
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">{{ session.get('role', '').replace('_', ' ') }}</p>
+            </div>
+        </div>
+        <form action="{{ url_for('forum') }}" method="POST" class="space-y-4">
+            <div>
+                <textarea name="content" required rows="4"
+                    class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-[#4A2C11] focus:bg-white transition-all leading-relaxed resize-none placeholder:text-slate-400"
+                    placeholder="Bagikan ceritamu atau buat pengumuman di sini..."></textarea>
+            </div>
+
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                {% if session.get('role') in ['admin_pikr', 'konselor'] %}
+                <label class="inline-flex items-center group cursor-pointer">
+                    <div class="relative flex items-center">
+                        <input type="checkbox" name="is_announcement" class="peer sr-only">
+                        <div class="w-10 h-6 bg-slate-200 rounded-full peer-checked:bg-[#8b6e50] transition-colors"></div>
+                        <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full peer-checked:translate-x-4 transition-transform shadow-sm"></div>
+                    </div>
+                    <span class="ml-3 text-xs font-bold text-slate-600 group-hover:text-[#4A2C11] transition-colors">Tandai Sebagai Pengumuman Resmi 📢</span>
+                </label>
+                {% else %}
+                <div></div>
+                {% endif %}
+
+                <button type="submit" class="btn-premium text-white px-8 py-3.5 rounded-2xl font-black text-xs shadow-lg flex items-center gap-2 uppercase tracking-widest hover:scale-105 transition-transform">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    Kirim Postingan
+                </button>
+            </div>
+        </form>
+        {% else %}
+        <div class="text-center py-8">
+            <div class="text-4xl mb-4">💬</div>
+            <p class="text-sm font-bold text-slate-600 mb-6">Login untuk ikut berdiskusi di forum komunitas.</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-3">
+                <a href="{{ url_for('login') }}" class="btn-premium px-8 py-3.5 rounded-2xl text-white font-black text-xs uppercase tracking-widest">Masuk</a>
+                <a href="{{ url_for('register') }}" class="px-8 py-3.5 rounded-2xl border border-slate-200 text-slate-700 font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-all">Daftar</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- ====== POSTS TIMELINE ====== -->
+    <div class="space-y-5">
+        {% for post in posts %}
+
+        {# ---- ANNOUNCEMENT POST ---- #}
+        {% if post.is_announcement %}
+        <div class="relative bg-gradient-to-br from-[#4A2C11] to-[#6a4020] rounded-[2.5rem] overflow-hidden shadow-xl">
+            <!-- Background glow -->
+            <div class="absolute -right-10 -top-10 w-48 h-48 bg-white/5 rounded-full pointer-events-none"></div>
+            <div class="absolute -left-6 -bottom-6 w-32 h-32 bg-white/5 rounded-full pointer-events-none"></div>
+
+            <div class="relative z-10 p-8">
+                <div class="flex justify-between items-start mb-6">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-[#FBE1B3] rounded-2xl flex items-center justify-center text-xl shadow-lg">📢</div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-black text-white">{{ post.username }}</span>
+                                <span class="bg-white/20 border border-white/20 text-white text-[8px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">Official</span>
+                            </div>
+                            <p class="text-[10px] font-bold text-white/50 uppercase tracking-widest mt-0.5">{{ post.date }}</p>
+                        </div>
+                    </div>
+
+                    {% if session.get('role') == 'admin_pikr' or post.username == session.get('username') %}
+                    <div class="relative">
+                        <button onclick="togglePostMenu('{{ post.id }}')" class="w-9 h-9 flex items-center justify-center bg-white/10 border border-white/10 text-white/60 rounded-2xl hover:bg-white/20 transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
+                        </button>
+                        <div id="postMenu-{{ post.id }}" class="hidden absolute right-0 mt-2 w-44 bg-white rounded-2xl shadow-2xl border border-slate-100 z-[60] overflow-hidden animate-fade-in">
+                            <a href="{{ url_for('delete_post', post_id=post.id) }}" onclick="return confirm('Hapus pengumuman ini?')"
+                               class="block px-4 py-3 text-xs text-red-600 font-black hover:bg-red-50 transition-colors uppercase tracking-widest">🗑️ Hapus Post</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="text-white font-medium text-sm md:text-base leading-relaxed whitespace-pre-wrap post-content pl-1">"{{ post.content }}"</div>
+            </div>
+        </div>
+
+        {# ---- REGULAR POST ---- #}
+        {% else %}
+        <div class="bg-white border border-slate-100 rounded-[2rem] p-7 relative group shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
+            <div class="flex justify-between items-start mb-5">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-[#FBE1B3] to-[#d8c5a3] rounded-2xl flex items-center justify-center font-black text-[#4A2C11] group-hover:scale-110 transition-transform uppercase text-sm">
+                        {{ post.username[0] }}
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm font-black text-slate-800 group-hover:text-[#4A2C11] transition-colors">{{ post.username }}</span>
+                            <span class="text-[9px] font-black text-slate-300 uppercase tracking-widest bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100">{{ post.role }}</span>
+                        </div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">{{ post.date }}</p>
+                    </div>
+                </div>
+
+                {% if session.get('role') == 'admin_pikr' or post.username == session.get('username') %}
+                <div class="relative">
+                    <button onclick="togglePostMenu('{{ post.id }}')" class="w-8 h-8 flex items-center justify-center bg-slate-50 border border-slate-100 text-slate-400 rounded-xl hover:bg-[#4A2C11] hover:text-white transition-all">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
+                    </button>
+                    <div id="postMenu-{{ post.id }}" class="hidden absolute right-0 mt-2 w-44 bg-white rounded-2xl shadow-2xl border border-slate-100 z-[60] overflow-hidden animate-fade-in">
+                        <a href="{{ url_for('delete_post', post_id=post.id) }}" onclick="return confirm('Hapus postingan ini?')"
+                           class="block px-4 py-3 text-xs text-red-600 font-black hover:bg-red-50 transition-colors uppercase tracking-widest">🗑️ Hapus Post</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="text-slate-600 text-sm leading-relaxed whitespace-pre-wrap pl-1 post-content">{{ post.content }}</div>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="text-center py-24">
+            <div class="w-24 h-24 bg-slate-50 rounded-[2rem] flex items-center justify-center text-5xl mx-auto mb-6 border border-slate-100">💭</div>
+            <h3 class="text-xl font-black text-slate-700 tracking-tight mb-2">Belum Ada Percakapan</h3>
+            <p class="text-slate-400 text-sm font-medium">Jadilah yang pertama membuka diskusi di forum komunitas!</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    function togglePostMenu(id) {
+        const menu = document.getElementById('postMenu-' + id);
+        document.querySelectorAll('[id^="postMenu-"]').forEach(m => {
+            if (m.id !== 'postMenu-' + id) m.classList.add('hidden');
+        });
+        menu.classList.toggle('hidden');
+    }
+
+    window.addEventListener('click', (e) => {
+        if (!e.target.closest('.relative')) {
+            document.querySelectorAll('[id^="postMenu-"]').forEach(m => m.classList.add('hidden'));
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const usernames = {{ valid_usernames | default([]) | tojson }};
+        usernames.sort((a, b) => b.length - a.length);
+
+        document.querySelectorAll('.post-content').forEach(el => {
+            let html = el.innerHTML;
+            usernames.forEach(uname => {
+                const escapedUname = uname.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const regex = new RegExp(`@${escapedUname}(?![a-zA-Z0-9_])`, 'gi');
+                html = html.replace(regex, match => `<span class="text-[#4A2C11] font-black bg-[#FBE1B3]/60 px-1.5 py-0.5 rounded-md border border-[#d8c5a3]/50 shadow-sm">${match}</span>`);
+            });
+            el.innerHTML = html;
+        });
+    });
+</script>
+{% endblock %}

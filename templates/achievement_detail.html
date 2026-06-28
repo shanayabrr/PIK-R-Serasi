@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  .article-body p {
+    margin-bottom: 1.25rem;
+    line-height: 1.85;
+    color: #334155;
+    font-size: 0.95rem;
+    text-align: justify;
+    text-justify: inter-word;
+  }
+  .article-body p:last-child { margin-bottom: 0; }
+  .article-body strong, .article-body b { color: #1e293b; font-weight: 800; }
+</style>
+
+<div class="max-w-3xl mx-auto py-10 px-4 fade-in">
+
+  <!-- Back Link -->
+  <a href="{{ url_for('achievements') }}"
+     class="inline-flex items-center gap-2 text-xs font-black text-[#8b6e50] uppercase tracking-[0.2em] mb-10 hover:-translate-x-1 transition-transform group">
+    <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
+    </svg>
+    Galeri Prestasi
+  </a>
+
+  <!-- Article Card -->
+  <article class="premium-card rounded-[2.5rem] overflow-hidden border border-[#FBE1B3]/40 bg-white shadow-2xl">
+
+    <!-- Header Banner -->
+    <div class="relative bg-gradient-to-br from-[#4A2C11] via-[#7c4a1e] to-[#b5722e] px-10 pt-12 pb-16 overflow-hidden">
+      <div class="absolute -right-16 -top-16 w-64 h-64 bg-white/5 rounded-full"></div>
+      <div class="absolute -left-10 bottom-0 w-48 h-48 bg-[#FBE1B3]/10 rounded-full blur-2xl"></div>
+      <div class="absolute right-0 bottom-0 text-[10rem] leading-none opacity-10 select-none">🏆</div>
+
+      <!-- Badge -->
+      <div class="flex items-center gap-3 mb-6 relative z-10">
+        <span class="bg-[#FBE1B3] text-[#4A2C11] text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-[0.2em]">
+          🏆 Prestasi PIK-R SERASI
+        </span>
+        <span class="text-[9px] font-bold text-white/40 uppercase tracking-widest">#{{ achievement.id }}</span>
+      </div>
+
+      <!-- Title -->
+      <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight leading-tight mb-8 relative z-10">
+        {{ achievement.title }}
+      </h1>
+
+      <!-- Author Row -->
+      <div class="flex items-center gap-4 relative z-10">
+        <div>
+          <p class="text-white/40 text-[9px] font-bold uppercase tracking-widest">Tanggal</p>
+          <p class="text-white/80 text-xs font-bold">{{ achievement.date }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Swoosh separator -->
+    <div class="h-6 bg-white rounded-b-none" style="margin-top:-1.5rem; border-radius: 2rem 2rem 0 0;"></div>
+
+    {% if achievement.foto_list %}
+    <!-- Slideshow Carousel -->
+    <div class="relative w-full h-64 md:h-96 overflow-hidden group/slideshow bg-slate-900">
+      <div id="slideshow-container" class="w-full h-full flex transition-transform duration-500 ease-out">
+        {% for foto in achievement.foto_list %}
+        <div class="w-full h-full flex-shrink-0">
+          <img src="{{ url_for('static', filename='uploads/' + foto) }}" alt="{{ achievement.title }}" class="w-full h-full object-cover">
+        </div>
+        {% endfor %}
+      </div>
+      
+      <!-- Gradient overlay -->
+      <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/10 to-transparent pointer-events-none"></div>
+
+      <!-- Navigation Arrows -->
+      {% if achievement.foto_list | length > 1 %}
+      <button onclick="moveSlide(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/60 hover:scale-105 transition-all opacity-0 group-hover/slideshow:opacity-100 z-30">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+      <button onclick="moveSlide(1)" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/60 hover:scale-105 transition-all opacity-0 group-hover/slideshow:opacity-100 z-30">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+      </button>
+
+      <!-- Dot Indicators -->
+      <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+        {% for foto in achievement.foto_list %}
+        <button onclick="setSlide({{ loop.index0 }})" class="slideshow-dot w-2 h-2 rounded-full bg-white/50 hover:bg-white transition-all {{ 'bg-white scale-125' if loop.first else '' }}"></button>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Content Body -->
+    <div class="px-10 pb-10 pt-6">
+      {% if achievement.content and achievement.content.strip() %}
+      <div class="article-body">
+        {% set lines = achievement.content.strip().split('\n') %}
+        {% set ns = namespace(buf='') %}
+        {% for line in lines %}
+          {% if line.strip() == '' %}
+            {% if ns.buf.strip() %}
+              <p>{{ ns.buf.strip() | safe }}</p>
+            {% endif %}
+            {% set ns.buf = '' %}
+          {% else %}
+            {% if ns.buf %}
+              {% set ns.buf = ns.buf ~ ' ' ~ line %}
+            {% else %}
+              {% set ns.buf = line %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        {% if ns.buf.strip() %}
+          <p>{{ ns.buf.strip() | safe }}</p>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      <!-- Attachment (Show fallback download only if not an image slideshow or if it has docx/pdf) -->
+      {% if achievement.dokumen and not achievement.foto_list %}
+      <div class="mt-10 p-6 bg-[#FBE1B3]/20 rounded-2xl border border-[#FBE1B3]/60 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 bg-[#4A2C11] rounded-xl flex items-center justify-center text-xl shadow-lg">📎</div>
+          <div>
+            <p class="text-sm font-black text-[#4A2C11]">Berkas Pendukung / Foto</p>
+            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Unduh lampiran prestasi</p>
+          </div>
+        </div>
+        <a href="{{ url_for('static', filename='uploads/' + achievement.dokumen) }}" download
+           class="btn-premium text-white px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg flex items-center gap-2 whitespace-nowrap">
+          Unduh ↓
+        </a>
+      </div>
+      {% endif %}
+
+      <!-- Admin Controls -->
+      {% if session.get('role') == 'admin_pikr' %}
+      <div class="mt-6 flex gap-3">
+        <a href="{{ url_for('delete_achievement', ach_id=achievement.id) }}"
+           onclick="return confirm('Hapus prestasi ini secara permanen?')"
+           class="flex items-center gap-2 px-5 py-3 bg-rose-50 text-rose-500 rounded-xl text-xs font-black hover:bg-rose-500 hover:text-white transition-all">
+          🗑️ Hapus Prestasi
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </article>
+
+  <!-- Comments Section -->
+  <div class="mt-12">
+    <h3 class="text-xl font-black text-slate-800 tracking-tight mb-6">Ulasan &amp; Apresiasi</h3>
+
+    <div class="space-y-4 mb-8">
+      {% if achievement.comments %}
+        {% for c in achievement.comments %}
+        <div class="premium-card p-6 rounded-2xl bg-white flex gap-5 group border border-slate-100">
+          <div class="w-10 h-10 bg-[#FBE1B3]/60 rounded-xl flex items-center justify-center text-base font-black text-[#4A2C11] flex-shrink-0 group-hover:bg-[#4A2C11] group-hover:text-white transition-colors">
+            {{ c.username[0] | upper }}
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-3 mb-2">
+              <h4 class="text-sm font-black text-slate-800 uppercase tracking-tight">{{ c.username }}</h4>
+              <div class="text-amber-400 text-xs">
+                {% for i in range(c.rating) %}⭐{% endfor %}
+              </div>
+            </div>
+            {% if c.text %}
+            <p class="text-slate-600 leading-relaxed text-sm italic">"{{ c.text }}"</p>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="premium-card p-10 rounded-2xl border border-dashed border-[#FBE1B3] text-center text-slate-400">
+          <p class="text-3xl mb-3">💬</p>
+          <p class="italic font-bold text-sm">Belum ada ulasan. Jadilah yang pertama memberikan apresiasi!</p>
+        </div>
+      {% endif %}
+    </div>
+
+    {% if session.get('role') == 'anggota_remaja' %}
+    <div class="premium-card p-8 rounded-2xl bg-[#4A2C11] text-white relative overflow-hidden">
+      <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-[#FBE1B3]/20 rounded-full blur-3xl"></div>
+      <div class="relative z-10">
+        <h3 class="text-base font-black tracking-tight mb-6">Berikan Ulasan &amp; Rating</h3>
+        <form action="{{ url_for('add_achievement_comment', ach_id=achievement.id) }}" method="POST">
+          <div class="flex flex-col md:flex-row gap-4">
+            <input type="text" name="comment" required
+                   class="flex-1 bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[#FBE1B3] text-white placeholder:text-white/40"
+                   placeholder="Tulis apresiasi kamu...">
+            <select name="rating"
+                    class="bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm font-black outline-none focus:ring-2 focus:ring-[#FBE1B3]">
+              <option value="5" class="text-slate-800">5 ⭐⭐⭐⭐⭐</option>
+              <option value="4" class="text-slate-800">4 ⭐⭐⭐⭐</option>
+              <option value="3" class="text-slate-800">3 ⭐⭐⭐</option>
+              <option value="2" class="text-slate-800">2 ⭐⭐</option>
+              <option value="1" class="text-slate-800">1 ⭐</option>
+            </select>
+            <button type="submit"
+                    class="btn-premium text-white px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg whitespace-nowrap">
+              Kirim →
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+
+<script>
+  // Slideshow Logic
+  let currentSlide = 0;
+  const totalSlides = {{ (achievement.foto_list | length) if achievement.foto_list else 0 }};
+  const container = document.getElementById('slideshow-container');
+  const dots = document.querySelectorAll('.slideshow-dot');
+
+  function updateSlideshow() {
+    if (!container) return;
+    container.style.transform = `translateX(-${currentSlide * 100}%)`;
+    dots.forEach((dot, idx) => {
+      if (idx === currentSlide) {
+        dot.classList.add('bg-white', 'scale-125');
+        dot.classList.remove('bg-white/50');
+      } else {
+        dot.classList.remove('bg-white', 'scale-125');
+        dot.classList.add('bg-white/50');
+      }
+    });
+  }
+
+  window.moveSlide = function(dir) {
+    if (totalSlides === 0) return;
+    currentSlide = (currentSlide + dir + totalSlides) % totalSlides;
+    updateSlideshow();
+  }
+
+  window.setSlide = function(idx) {
+    currentSlide = idx;
+    updateSlideshow();
+  }
+
+  // Auto-play every 5 seconds
+  if (totalSlides > 1) {
+    setInterval(() => {
+      window.moveSlide(1);
+    }, 5000);
+  }
+</script>
+{% endblock %}

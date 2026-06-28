@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+
+<div class="max-w-6xl mx-auto">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+        <div>
+            <h2 class="text-4xl font-black text-slate-800 tracking-tighter">Inovasi & Program Kerja</h2>
+            <p class="text-slate-500 mt-2 font-medium italic">Berbagi ide dan program untuk kemajuan remaja! 🌱</p>
+        </div>
+        {% if session.get('role') in ['admin_pikr', 'konselor'] %}
+        <button onclick="document.getElementById('modalAddInnovation').classList.remove('hidden')" class="btn-premium text-white px-6 py-3 rounded-2xl font-bold text-sm shadow-xl flex items-center gap-2">
+            <span>+</span> Tambah Inovasi
+        </button>
+        {% endif %}
+    </div>
+
+    {% if innovations %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {% for inn in innovations %}
+        <div class="premium-card p-8 rounded-[2.5rem] flex flex-col justify-between relative group overflow-hidden h-full">
+            <div class="absolute -right-12 -top-12 w-40 h-40 bg-[#FBE1B3]/40 rounded-full opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-700 pointer-events-none"></div>
+            {% if session.get('role') == 'admin_pikr' or (session.get('role') == 'konselor' and inn.author == session.get('username')) %}
+            <div class="absolute top-6 right-6 z-20">
+                <button onclick="toggleInnMenu('{{ inn.id }}')" class="w-10 h-10 flex items-center justify-center bg-white/80 backdrop-blur-sm text-slate-400 rounded-2xl hover:bg-slate-800 hover:text-white transition-all shadow-sm border border-slate-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+                </button>
+                <div id="innMenu-{{ inn.id }}" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-2xl border border-slate-100 z-[60] overflow-hidden animate-fade-in">
+                    <a href="{{ url_for('delete_innovation', inn_id=inn.id) }}" onclick="return confirm('Hapus inovasi ini?')" class="block px-5 py-4 text-[10px] text-red-600 font-black hover:bg-red-50 transition-colors uppercase tracking-widest">🗑️ Hapus Inovasi</a>
+                    <button onclick="openEditInnovationModal('{{ inn.id }}', '{{ inn.title|e }}', '{{ inn.content|e }}')" class="w-full text-left px-5 py-4 text-[10px] text-slate-600 font-black hover:bg-slate-50 transition-colors uppercase tracking-widest">✏️ Edit Inovasi</button>
+                </div>
+            </div>
+            {% endif %}
+            <div class="relative z-10">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="bg-[#FBE1B3] text-[#4A2C11] text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-[0.1em]">Inovasi</span>
+                    <span class="text-[9px] font-black text-slate-300 uppercase tracking-widest">ID #{{ inn.id }}</span>
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-auto">{{ inn.date }}</span>
+                </div>
+                <h3 class="text-2xl font-black mb-3 pr-10 text-slate-800 group-hover:text-[#8b6e50] transition-colors">{{ inn.title }}</h3>
+                {% if inn.content and inn.content.strip() != "" %}
+                <p class="text-slate-500 mb-6 text-sm leading-relaxed">{{ inn.content|striptags|truncate(140) }}</p>
+                <a href="{{ url_for('innovation_detail', inn_id=inn.id) }}" class="inline-flex items-center text-[#8b6e50] text-xs font-black uppercase tracking-widest hover:translate-x-2 transition-transform mb-6">Baca Selengkapnya</a>
+                {% else %}
+                <div class="bg-slate-50 p-4 rounded-2xl border border-dashed border-slate-200 mb-6 flex items-center gap-3">
+                    <span class="text-xl">📄</span>
+                    <p class="text-xs text-slate-400 font-bold italic">Inovasi tersedia dalam bentuk dokumen lampiran.</p>
+                </div>
+                {% endif %}
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-8 h-8 bg-[#4A2C11] rounded-xl flex items-center justify-center text-xs font-bold text-white uppercase">{{ inn.author[0] }}</div>
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Oleh {{ inn.author }}</span>
+                </div>
+                {% if inn.dokumen %}
+                <div class="p-4 bg-[#FBE1B3]/30 rounded-2xl border border-[#FBE1B3]/60 flex items-center justify-between shadow-sm group/doc transition-all hover:bg-[#FBE1B3]/50 mb-6">
+                    <div class="flex items-center gap-3 truncate pr-4">
+                        <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">📑</div>
+                        <span class="text-[10px] font-black text-[#4A2C11] truncate">{{ inn.dokumen.split('_',1)[1] if '_' in inn.dokumen else inn.dokumen }}</span>
+                    </div>
+                    <a href="{{ url_for('static', filename='uploads/' + inn.dokumen) }}" download class="bg-[#4A2C11] text-white px-4 py-2 rounded-xl text-[10px] font-black hover:bg-[#3D2511] transition-all uppercase tracking-wider">Unduh</a>
+                </div>
+                {% endif %}
+                <div class="mt-auto border-t border-slate-100 pt-6">
+                    <h4 class="text-[10px] font-black text-slate-400 mb-4 uppercase tracking-[0.2em]">Ulasan Terkini</h4>
+                    <div class="space-y-3 mb-6 max-h-48 overflow-y-auto pr-2 custom-scroll">
+                        {% if inn.comments %}
+                        {% for c in inn.comments %}
+                        <div class="bg-slate-50/50 p-4 rounded-2xl border border-slate-100 group/comment relative">
+                            <div class="flex justify-between items-start mb-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-black text-slate-800 text-[10px]">{{ c.username }}</span>
+                                    <span class="bg-amber-100 text-amber-700 font-black text-[9px] px-2 py-0.5 rounded-md uppercase">⭐ {{ c.rating }}</span>
+                                </div>
+                                <div class="flex gap-2 opacity-0 group-hover/comment:opacity-100 transition-opacity">
+                                    {% if c.username == session.get('username') %}
+                                    <button onclick="openEditInnovationComment('{{ inn.id }}','{{ c.id }}','{{ c.text }}')" class="text-blue-500 hover:text-blue-700 text-[9px] font-black uppercase tracking-widest">Edit</button>
+                                    {% endif %}
+                                    {% if session.get('role') == 'admin_pikr' or c.username == session.get('username') %}
+                                    <a href="{{ url_for('delete_innovation_comment', inn_id=inn.id, comment_id=c.id) }}" onclick="return confirm('Hapus ulasan ini?')" class="text-red-500 hover:text-red-700 text-[9px] font-black uppercase tracking-widest">Hapus</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% if c.text %}
+                            <p class="text-slate-500 italic text-[11px] leading-relaxed">"{{ c.text }}"</p>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <div class="text-center py-4 text-slate-300 italic text-xs">Belum ada ulasan inovasi.</div>
+                        {% endif %}
+                    </div>
+                    {% if session.get('role') == 'anggota_remaja' %}
+                    <form action="{{ url_for('add_innovation_comment', inn_id=inn.id) }}" method="POST" class="flex gap-2 items-center">
+                        <input type="text" name="comment" placeholder="Tulis ulasan (Opsional)..." class="flex-1 text-xs p-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-[#4A2C11] focus:bg-white transition-all"/>
+                        <select name="rating" class="text-xs p-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-slate-600 outline-none">
+                            <option value="5">5 ⭐</option><option value="4">4 ⭐</option><option value="3">3 ⭐</option><option value="2">2 ⭐</option><option value="1">1 ⭐</option>
+                        </select>
+                        <button type="submit" class="bg-[#4A2C11] text-white p-3 rounded-2xl hover:bg-[#3D2511] transition-all shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-20 bg-white rounded-[2rem] border border-[#FBE1B3] shadow-sm">
+        <div class="text-6xl mb-4">💡</div>
+        <h3 class="text-xl font-bold text-[#4A2C11]">Belum ada inovasi yang dibagikan</h3>
+        <p class="text-slate-400 text-sm mt-2">Segera bagikan ide dan program kerja Anda!</p>
+    </div>
+    {% endif %}
+</div>
+
+{# MODAL ADD INOVASI #}
+<div id="modalAddInnovation" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+    <div class="premium-card bg-white rounded-[2.5rem] w-full max-w-lg p-10 shadow-3xl animate-fade-in relative">
+        <button onclick="document.getElementById('modalAddInnovation').classList.add('hidden')" class="absolute -right-4 -top-4 w-8 h-8 flex items-center justify-center bg-slate-100 rounded-full text-slate-400 hover:bg-[#4A2C11] hover:text-white transition-all">&times;</button>
+        <h3 class="text-2xl font-black text-slate-800 mb-4">Bagikan Inovasi</h3>
+        <form action="{{ url_for('add_innovation') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+            <div>
+                <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase">Judul Inovasi</label>
+                <input type="text" name="title" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#4A2C11] outline-none" placeholder="Masukkan judul inovasi..."/>
+            </div>
+            <div>
+                <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase">Deskripsi (Opsional)</label>
+                <textarea name="content" id="editor_innovation" class="w-full"></textarea>
+            </div>
+            <div>
+                <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase">Lampiran Dokumen / Gambar</label>
+                <input type="file" name="dokumen" accept=".pdf,.docx,image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-slate-800 file:text-white"/>
+            </div>
+            <button type="submit" class="btn-premium w-full text-white py-3 rounded-2xl font-bold">Terbitkan Inovasi</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    if (document.getElementById('editor_innovation')) {
+        CKEDITOR.replace('editor_innovation', {height:180});
+    }
+    function toggleInnMenu(id){
+        const menu=document.getElementById('innMenu-'+id);
+        document.querySelectorAll('[id^="innMenu-"]').forEach(m=>{if(m.id!=='innMenu-'+id) m.classList.add('hidden');});
+        menu.classList.toggle('hidden');
+    }
+    function openEditInnovationModal(id,title,content){
+        // Placeholder: could redirect to an edit page or open another modal.
+        alert('Fitur edit inovasi belum diimplementasikan');
+    }
+    function openEditInnovationComment(innId,commentId,text){
+        // Placeholder for edit comment modal logic.
+        alert('Edit komentar belum tersedia');
+    }
+</script>
+{% endblock %}

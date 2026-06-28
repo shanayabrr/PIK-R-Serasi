@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto p-8 fade-in">
+  <h2 class="text-3xl font-black">booking konseling sebagai tamu</h2>
+  <p class="text-slate-500 mt-2">isi nama panggilan dan pilih metode. jika memilih <strong>online</strong>, anda akan diarahkan ke whatsapp konselor.</p>
+
+  <form id="counselForm" action="{{ url_for('counseling_guest') }}" method="POST" class="mt-6 space-y-4 bg-white p-6 rounded-2xl shadow">
+    <div>
+      <label class="text-lg font-black">nama panggilan (opsional)</label>
+      <input type="text" name="nickname" maxlength="40" class="w-full mt-2 p-3 border rounded-lg" placeholder="Contoh: Santi / Anonim" />
+    </div>
+
+    <div>
+      <label class="text-sm font-black">pilih konselor</label>
+      <select name="counselor_name" required class="w-full mt-2 p-3 border rounded-lg">
+        <option value="" disabled selected>— Pilih Konselor —</option>
+        {% for k in konselor_data %}
+          <option value="{{ k.username }}">{{ k.username }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div>
+      <label class="text-sm font-black">topik</label>
+      <select name="topic" class="w-full mt-2 p-3 border rounded-lg">
+        <option>kesehatan mental</option>
+        <option>kesehatan reproduksi</option>
+        <option>pengembangan diri</option>
+        <option>bullying & sosial</option>
+        <option>lainnya</option>
+      </select>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="text-sm font-black">tanggal</label>
+        <input type="date" name="date" required class="w-full mt-2 p-3 border rounded-lg" />
+      </div>
+      <div>
+        <label class="text-sm font-black">waktu</label>
+        <input type="time" name="time" required class="w-full mt-2 p-3 border rounded-lg" />
+      </div>
+    </div>
+
+    <div>
+      <label class="text-sm font-black">metode</label>
+      <select name="mode" required class="w-full mt-2 p-3 border rounded-lg">
+        <option value="online">online (whatsapp)</option>
+        <option value="offline">offline (tatap muka)</option>
+      </select>
+    </div>
+
+    <div class="flex items-start gap-3">
+      <input type="checkbox" id="consent" name="consent" value="1" class="mt-1" required />
+      <label for="consent" class="text-sm">Saya menyetujui syarat dan kebijakan privasi dan memahami ini bukan layanan darurat.</label>
+    </div>
+
+    <div>
+      <button type="submit" class="bg-amber-500 text-white px-6 py-3 rounded-xl font-black">kirim permintaan</button>
+      <a href="{{ url_for('index') }}" class="ml-4 text-slate-600">batal</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

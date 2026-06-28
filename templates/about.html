@@ -1,0 +1,448 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="relative overflow-hidden pt-12 pb-24">
+    {# Decorative Background Elements using our highlight colors #}
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full -z-10">
+        <div class="absolute top-10 right-10 w-96 h-96 bg-[#FBE1B3]/50 rounded-full blur-3xl opacity-70"></div>
+        <div class="absolute bottom-20 left-10 w-[30rem] h-[30rem] bg-[#FBE1B3]/30 rounded-full blur-3xl opacity-60"></div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-6">
+        
+        {# Page Title #}
+        <div class="text-center mb-16 fade-in">
+            <span class="inline-flex items-center gap-2 bg-[#FBE1B3] text-[#4A2C11] px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest mb-6 shadow-sm border border-[#ebd0a2]">
+                <span class="flex h-2 w-2 rounded-full bg-[#4A2C11] animate-pulse"></span>
+                Profil PIK-R Serasi
+            </span>
+            <h1 class="text-5xl md:text-6xl font-black text-[#4A2C11] tracking-tighter leading-none mb-4">
+                Tentang <span class="underline decoration-[#FBE1B3] decoration-8">Kami</span>
+            </h1>
+            <p class="text-slate-600 font-medium text-lg max-w-xl mx-auto">
+                Kenali sejarah berdirinya PIK-R SERASI dan para pengurus hebat di balik portal ini.
+            </p>
+        </div>
+
+        {# Section 1: Sejarah Berdiri (Latar Belakang) #}
+        <div class="premium-card bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl border border-[#FBE1B3] mb-12 fade-in relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-3 h-full bg-[#4A2C11]"></div>
+            
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-[#FBE1B3] rounded-2xl flex items-center justify-center text-3xl shadow-md">📜</div>
+                    <div>
+                        <h2 class="text-3xl font-black text-[#4A2C11] tracking-tight">Latar Belakang</h2>
+                        <p class="text-slate-400 font-bold uppercase tracking-wider text-[10px]">Perjalanan dan Sejarah Kami</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-slate-700 font-medium text-base md:text-lg leading-relaxed whitespace-pre-line bg-slate-50 p-8 rounded-3xl border border-dashed border-[#FBE1B3]">
+                <p>PIK Remaja SERASI dibentuk dan disahkan pada tanggal 14 Januari 2023 oleh Lurah Sempur di Aula Kelurahan Sempur. Terbentuknya PIK Remaja SERASI atas dukungan dari Lurah Sempur, Tim Penggerak PKK Kelurahan Sempur, LPM Sempur, Bhabinkamtibmas dan Babinsa Sempur, serta Remaja Kelurahan Sempur.</p>
+            </div>
+        </div>
+
+        {# Section 1.5: Arti Nama SERASI #}
+        <div class="fade-in mb-12 relative" style="animation-delay: 0.1s;">
+            <div class="bg-gradient-to-br from-[#8b6e50] to-[#6a543d] rounded-[3rem] p-10 md:p-14 text-white shadow-2xl overflow-hidden relative group border border-[#8b6e50]/20">
+                <div class="absolute -right-10 -bottom-10 opacity-10 transform group-hover:scale-110 transition-transform duration-700 text-white">
+                    <svg class="w-64 h-64" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+                </div>
+                <div class="relative z-10 max-w-4xl mx-auto text-center">
+                    <div class="inline-block bg-white text-[#8b6e50] px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest mb-6 shadow-md">Filosofi</div>
+                    <h2 class="text-4xl md:text-5xl font-black tracking-tighter mb-8 text-white">Arti Nama "SERASI"</h2>
+                    <div class="space-y-6 text-white/95 text-lg leading-relaxed font-medium">
+                        <p>"SERASI" bisa menggambarkan seseorang yang mampu menjaga keseimbangan dalam pergaulan, pendidikan, dan emosi. Masa remaja adalah periode pencarian jati diri, dan seseorang dengan nama Serasi diharapkan bisa menghadapi perubahan dengan harmoni, tetap selaras dengan nilai-nilai baik, dan menjaga hubungan yang baik dengan orang lain.</p>
+                        <p>Nama ini juga bisa menjadi motivasi agar remaja tersebut tetap tenang dalam menghadapi tantangan, menyesuaikan diri dengan lingkungan tanpa kehilangan identitasnya, dan selalu mencari keseimbangan dalam hidup.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Section 1.6: Arti Logo #}
+        <div class="fade-in mb-20" style="animation-delay: 0.2s;">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-black text-[#4A2C11] tracking-tight">Arti Logo PIK-R SERASI</h2>
+                <p class="text-[#8b6e50] font-bold uppercase tracking-widest text-xs mt-2">Makna di Balik Identitas Visual</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-8 rounded-[2rem] shadow-lg border border-[#FBE1B3]/50 hover:-translate-y-2 transition-transform duration-300">
+                    <div class="w-14 h-14 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-black text-[#4A2C11] mb-3">Jargon "SERASI"</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Singkatan dari <strong>Sempur Remaja Beraksi</strong>, yang berarti remaja senang beraksi dan juga mempunyai aksi nyata dalam berorganisasi.</p>
+                </div>
+                <div class="bg-white p-8 rounded-[2rem] shadow-lg border border-[#FBE1B3]/50 hover:-translate-y-2 transition-transform duration-300 delay-100">
+                    <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-black text-[#4A2C11] mb-3">Lambang Tangan Terhubung</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Melambangkan kerja sama, solidaritas, dan persatuan. Setiap orang saling mendukung dan bekerja bersama untuk mencapai tujuan.</p>
+                </div>
+                <div class="bg-white p-8 rounded-[2rem] shadow-lg border border-[#FBE1B3]/50 hover:-translate-y-2 transition-transform duration-300 delay-200">
+                    <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-black text-[#4A2C11] mb-3">Tangan Berbeda Warna</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Melambangkan kebersamaan dalam keberagaman. Remaja dari berbagai latar belakang dapat bersatu, saling mendukung, dan bekerja sama.</p>
+                </div>
+            </div>
+        </div>
+
+        {# Section 1.7: Kolaborasi Stakeholder #}
+        <div class="fade-in mb-20" style="animation-delay: 0.2s;">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12 gap-4">
+                <div>
+                    <h2 class="text-4xl font-black text-[#4A2C11] tracking-tight">Kolaborasi Stakeholder</h2>
+                    <p class="text-[#8b6e50] font-bold uppercase tracking-widest text-xs mt-2">Bersama membangun ruang aman dan berdaya bagi remaja</p>
+                </div>
+                {% if session.get('role') == 'admin_pikr' %}
+                <button onclick="openAddStakeholderModal()" class="bg-[#4A2C11] text-white hover:bg-[#3D2511] px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-md flex items-center gap-2">
+                    <span>➕</span> Tambah Stakeholder
+                </button>
+                {% endif %}
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                {% for s in stakeholders %}
+                <div class="premium-card p-6 rounded-[2rem] bg-white border border-[#FBE1B3]/30 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative">
+                    {% if session.get('role') == 'admin_pikr' %}
+                    <div class="absolute top-4 right-4 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                        <button onclick="openEditStakeholderModal({{ s.id }}, '{{ s.name | replace('\'', '\\\'') }}', '{{ s.role_title | replace('\'', '\\\'') }}', '{{ s.role_desc | replace('\'', '\\\'') }}', '{{ s.category | replace('\'', '\\\'') }}', '{{ s.icon_type | replace('\'', '\\\'') }}')" class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-xl text-xs transition-colors shadow-md">✏️</button>
+                        <a href="{{ url_for('delete_stakeholder', stk_id=s.id) }}" onclick="return confirm('Apakah Anda yakin ingin menghapus stakeholder {{ s.name }}?')" class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-xl text-xs transition-colors shadow-md flex items-center justify-center">🗑️</a>
+                    </div>
+                    {% endif %}
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform overflow-hidden
+                            {% if not s.logo %}
+                                {% if s.icon_type == 'academic' %}bg-indigo-50 text-indigo-600
+                                {% elif s.icon_type == 'government' %}bg-amber-50 text-amber-600
+                                {% elif s.icon_type == 'family' %}bg-rose-50 text-rose-600
+                                {% elif s.icon_type == 'community' %}bg-emerald-50 text-emerald-600
+                                {% elif s.icon_type == 'security' %}bg-sky-50 text-sky-600
+                                {% else %}bg-slate-100 text-slate-600{% endif %}
+                            {% endif %}">
+                            {% if s.logo %}
+                                <img src="{{ url_for('static', filename='uploads/stakeholders/' ~ s.logo) }}" class="w-full h-full object-cover rounded-2xl" alt="{{ s.name }} Logo">
+                            {% else %}
+                                {% if s.icon_type == 'academic' %}
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                                {% elif s.icon_type == 'government' %}
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                                {% elif s.icon_type == 'family' %}
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                                {% elif s.icon_type == 'community' %}
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                {% elif s.icon_type == 'security' %}
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                                {% else %}
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        <h3 class="text-lg font-black text-[#4A2C11] mb-2 leading-tight">{{ s.name }}</h3>
+                        <p class="text-[10px] font-bold uppercase tracking-wider mb-3
+                            {% if s.icon_type == 'academic' %}text-indigo-600
+                            {% elif s.icon_type == 'government' %}text-amber-600
+                            {% elif s.icon_type == 'family' %}text-rose-600
+                            {% elif s.icon_type == 'community' %}text-emerald-600
+                            {% elif s.icon_type == 'security' %}text-sky-600
+                            {% else %}text-slate-600{% endif %}">{{ s.role_title }}</p>
+                        <p class="text-xs text-slate-500 leading-relaxed">{{ s.role_desc }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+       {# Section 2: Foto Bersama Pengurus #}
+<div class="fade-in" style="animation-delay: 0.2s;">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
+        <div class="flex items-center gap-4">
+            <div class="w-14 h-14 bg-[#FBE1B3] rounded-2xl flex items-center justify-center text-3xl shadow-md">📸</div>
+            <div>
+                <h2 class="text-3xl font-black text-[#4A2C11] tracking-tight">Foto Bersama Pengurus</h2>
+                <p class="text-slate-400 font-bold uppercase tracking-wider text-[10px]">Momen Kebersamaan Kami</p>
+            </div>
+        </div>
+        
+        {% if session.get('role') == 'admin_pikr' %}
+        <button onclick="openAddOfficerModal()" class="bg-[#4A2C11] text-white hover:bg-[#3D2511] px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-md flex items-center gap-2">
+            <span>➕</span> Tambah Foto
+        </button>
+        {% endif %}
+    </div>
+
+    {# Group Photo Layout #}
+    {% if officers %}
+    <div class="flex flex-col gap-12"> 
+        {% for o in officers %}
+        <div class="premium-card bg-white rounded-[2rem] overflow-hidden shadow-lg border border-[#FBE1B3] flex flex-col group relative">
+            
+            {# Full Landscape Photo (Satu Layar) #}
+            <div class="relative w-full aspect-video md:h-[75vh] bg-slate-50 overflow-hidden border-b border-[#FBE1B3]/30">
+                <img src="{{ url_for('static', filename=o.photo.replace('static/', '').replace('static\\', '').replace('\\', '/')) }}" alt="Foto Bersama Pengurus" class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700">
+            </div>
+
+            {# Caption Info #}
+            <div class="p-6 md:p-10 flex-grow flex flex-col justify-between">
+                {% if o.caption %}
+                <div class="bg-slate-50 p-6 rounded-2xl border border-dashed border-[#FBE1B3] text-slate-700 text-lg md:text-xl italic text-center max-w-4xl mx-auto w-full">
+                    "{{ o.caption }}"
+                </div>
+                {% endif %}
+
+                {# Admin Actions #}
+                {% if session.get('role') == 'admin_pikr' %}
+                <div class="flex justify-center items-center gap-4 mt-8 pt-6 border-t border-slate-100">
+                    <button onclick="openEditOfficerModal({{ o.id }}, '{{ o.caption | replace("'", "\\'") }}')" class="px-8 bg-[#FBE1B3] text-[#4A2C11] hover:bg-[#ebd0a2] py-3 rounded-xl text-sm font-black uppercase tracking-widest text-center transition-all">
+                        Edit Caption & Foto
+                    </button>
+                    <a href="{{ url_for('delete_officer', officer_id=o.id) }}" onclick="return confirm('Apakah Anda yakin ingin menghapus foto bersama ini?')" class="px-8 bg-red-50 text-red-600 hover:bg-red-100 py-3 rounded-xl text-sm font-black uppercase tracking-widest text-center transition-all border border-red-200">
+                        Hapus Foto
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-24 bg-white rounded-[2rem] border border-[#FBE1B3] shadow-sm">
+        <div class="text-6xl mb-4">🖼️</div>
+        <h3 class="text-xl font-bold text-[#4A2C11]">Belum ada foto bersama</h3>
+        <p class="text-slate-400 text-sm mt-2">Gunakan panel admin untuk menambahkan momen kebersamaan pengurus.</p>
+    </div>
+    {% endif %}
+</div>
+
+{# --- MODAL: EDIT SEJARAH --- #}
+{% if session.get('role') == 'admin_pikr' %}
+<div id="historyModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden animate-fade-in">
+    <div class="bg-white rounded-[2rem] shadow-2xl border border-[#FBE1B3] w-full max-w-2xl mx-4 overflow-hidden">
+        <div class="p-6 bg-[#4A2C11] text-white flex justify-between items-center">
+            <h3 class="text-lg font-black uppercase tracking-widest">Edit Sejarah Berdiri</h3>
+            <button onclick="closeHistoryModal()" class="text-white/80 hover:text-white text-2xl font-bold">&times;</button>
+        </div>
+        <form action="{{ url_for('edit_about_history') }}" method="POST" class="p-6 space-y-4">
+            <div>
+                <label for="historyContent" class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Teks Sejarah</label>
+                <textarea id="historyContent" name="content" rows="8" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#4A2C11] transition-all" required>{{ history }}</textarea>
+            </div>
+            <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                <button type="button" onclick="closeHistoryModal()" class="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-black uppercase tracking-widest transition-all">Batal</button>
+                <button type="submit" class="px-6 py-3 bg-[#4A2C11] hover:bg-[#3D2511] text-white rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-md">Simpan Perubahan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{# --- MODAL: TAMBAH PENGURUS --- #}
+<div id="addOfficerModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden animate-fade-in">
+    <div class="bg-white rounded-[2rem] shadow-2xl border border-[#FBE1B3] w-full max-w-lg mx-4 overflow-hidden">
+        <div class="p-6 bg-[#4A2C11] text-white flex justify-between items-center">
+            <h3 class="text-lg font-black uppercase tracking-widest">Tambah Pengurus Baru</h3>
+            <button onclick="closeAddOfficerModal()" class="text-white/80 hover:text-white text-2xl font-bold">&times;</button>
+        </div>
+        <form action="{{ url_for('add_officer') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
+            <div>
+                <label for="addName" class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Nama Pengurus</label>
+                <input type="text" id="addName" name="name" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#4A2C11] transition-all" required>
+            </div>
+            <div>
+                <label for="addPosition" class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Jabatan</label>
+                <input type="text" id="addPosition" name="position" placeholder="Contoh: Ketua, Konselor Sebaya" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#4A2C11] transition-all" required>
+            </div>
+            <div>
+                <label for="addPhoto" class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Foto Pengurus</label>
+                <input type="file" id="addPhoto" name="photo" accept="image/*" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#4A2C11] transition-all" required>
+                <p class="text-[10px] text-slate-400 mt-1">Format gambar (JPG, PNG, GIF).</p>
+            </div>
+            <div>
+                <label for="addCaption" class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Caption / Keterangan Foto</label>
+                <textarea id="addCaption" name="caption" rows="3" placeholder="Masukkan caption menarik atau deskripsi foto..." class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#4A2C11] transition-all"></textarea>
+            </div>
+            <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                <button type="button" onclick="closeAddOfficerModal()" class="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-black uppercase tracking-widest transition-all">Batal</button>
+                <button type="submit" class="px-6 py-3 bg-[#4A2C11] hover:bg-[#3D2511] text-white rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-md">Tambah</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{# --- MODAL: EDIT PENGURUS --- #}
+<div id="editOfficerModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden animate-fade-in">
+    <div class="bg-white rounded-[2rem] shadow-2xl border border-[#FBE1B3] w-full max-w-lg mx-4 overflow-hidden">
+        <div class="p-6 bg-[#4A2C11] text-white flex justify-between items-center">
+            <h3 class="text-lg font-black uppercase tracking-widest">Edit Data Pengurus</h3>
+            <button onclick="closeEditOfficerModal()" class="text-white/80 hover:text-white text-2xl font-bold">&times;</button>
+        </div>
+        <form id="editOfficerForm" action="" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
+            <div>
+                <label for="editName" class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Nama Pengurus</label>
+                <input type="text" id="editName" name="name" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#4A2C11] transition-all" required>
+            </div>
+            <div>
+                <label for="editPosition" class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Jabatan</label>
+                <input type="text" id="editPosition" name="position" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#4A2C11] transition-all" required>
+            </div>
+            <div>
+                <label for="editPhoto" class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Foto Pengurus (Biarkan kosong jika tidak ingin diubah)</label>
+                <input type="file" id="editPhoto" name="photo" accept="image/*" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#4A2C11] transition-all">
+                <p class="text-[10px] text-slate-400 mt-1">Format gambar (JPG, PNG, GIF).</p>
+            </div>
+            <div>
+                <label for="editCaption" class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Caption / Keterangan Foto</label>
+                <textarea id="editCaption" name="caption" rows="3" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#4A2C11] transition-all"></textarea>
+            </div>
+            <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                <button type="button" onclick="closeEditOfficerModal()" class="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-black uppercase tracking-widest transition-all">Batal</button>
+                <button type="submit" class="px-6 py-3 bg-[#4A2C11] hover:bg-[#3D2511] text-white rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-md">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{# --- MODAL: TAMBAH STAKEHOLDER --- #}
+<div id="addStakeholderModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden animate-fade-in">
+    <div class="bg-white rounded-[2rem] shadow-2xl border border-[#FBE1B3] w-full max-w-lg mx-4 overflow-hidden">
+        <div class="p-6 bg-[#4A2C11] text-white flex justify-between items-center">
+            <h3 class="text-lg font-black uppercase tracking-widest">Tambah Stakeholder Baru</h3>
+            <button onclick="closeAddStakeholderModal()" class="text-white/80 hover:text-white text-2xl font-bold">&times;</button>
+        </div>
+        <form action="{{ url_for('add_stakeholder') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
+            <div>
+                <label for="addStkName" class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Nama Stakeholder / Lembaga</label>
+                <input type="text" id="addStkName" name="name" placeholder="Contoh: STMIK Tazkia" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#4A2C11] transition-all" required>
+            </div>
+            <div>
+                <label for="addStkLogo" class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Logo Stakeholder (Gambar)</label>
+                <input type="file" id="addStkLogo" name="logo" accept="image/*" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#4A2C11] transition-all">
+            </div>
+            <div>
+                <label for="addStkRoleTitle" class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Peran / Jabatan Mitra</label>
+                <input type="text" id="addStkRoleTitle" name="role_title" placeholder="Contoh: Akademisi & Sistem" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#4A2C11] transition-all" required>
+            </div>
+            <div>
+                <label for="addStkCategory" class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Kategori Mitra</label>
+                <input type="text" id="addStkCategory" name="category" placeholder="Contoh: Akademisi, Pemerintah, dll" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#4A2C11] transition-all">
+            </div>
+            <div>
+                <label for="addStkIconType" class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Tipe Ikon / Warna Tema (Fallback)</label>
+                <select id="addStkIconType" name="icon_type" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#4A2C11] transition-all">
+                    <option value="academic">Graduation/Laptop (Indigo - Akademisi)</option>
+                    <option value="government">Building/Government (Amber - Pemerintah)</option>
+                    <option value="family">Heart/Family Care (Rose - Keluarga)</option>
+                    <option value="community">Users/Community (Emerald - Pemberdayaan)</option>
+                    <option value="security">Shield/Security (Sky - Keamanan)</option>
+                </select>
+            </div>
+            <div>
+                <label for="addStkRoleDesc" class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Deskripsi Peran & Kerja Sama</label>
+                <textarea id="addStkRoleDesc" name="role_desc" rows="3" placeholder="Masukkan rincian bentuk kerja sama atau peran stakeholder ini..." class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#4A2C11] transition-all" required></textarea>
+            </div>
+            <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                <button type="button" onclick="closeAddStakeholderModal()" class="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-black uppercase tracking-widest transition-all">Batal</button>
+                <button type="submit" class="px-6 py-3 bg-[#4A2C11] hover:bg-[#3D2511] text-white rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-md">Tambah</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{# --- MODAL: EDIT STAKEHOLDER --- #}
+<div id="editStakeholderModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden animate-fade-in">
+    <div class="bg-white rounded-[2rem] shadow-2xl border border-[#FBE1B3] w-full max-w-lg mx-4 overflow-hidden">
+        <div class="p-6 bg-[#4A2C11] text-white flex justify-between items-center">
+            <h3 class="text-lg font-black uppercase tracking-widest">Edit Data Stakeholder</h3>
+            <button onclick="closeEditStakeholderModal()" class="text-white/80 hover:text-white text-2xl font-bold">&times;</button>
+        </div>
+        <form id="editStakeholderForm" action="" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
+            <div>
+                <label for="editStkName" class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Nama Stakeholder / Lembaga</label>
+                <input type="text" id="editStkName" name="name" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#4A2C11] transition-all" required>
+            </div>
+            <div>
+                <label for="editStkLogo" class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Perbarui Logo (Kosongkan jika tidak diubah)</label>
+                <input type="file" id="editStkLogo" name="logo" accept="image/*" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#4A2C11] transition-all">
+            </div>
+            <div>
+                <label for="editStkRoleTitle" class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Peran / Jabatan Mitra</label>
+                <input type="text" id="editStkRoleTitle" name="role_title" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#4A2C11] transition-all" required>
+            </div>
+            <div>
+                <label for="editStkCategory" class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Kategori Mitra</label>
+                <input type="text" id="editStkCategory" name="category" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#4A2C11] transition-all">
+            </div>
+            <div>
+                <label for="editStkIconType" class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Tipe Ikon / Warna Tema (Fallback)</label>
+                <select id="editStkIconType" name="icon_type" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#4A2C11] transition-all">
+                    <option value="academic">Graduation/Laptop (Indigo - Akademisi)</option>
+                    <option value="government">Building/Government (Amber - Pemerintah)</option>
+                    <option value="family">Heart/Family Care (Rose - Keluarga)</option>
+                    <option value="community">Users/Community (Emerald - Pemberdayaan)</option>
+                    <option value="security">Shield/Security (Sky - Keamanan)</option>
+                </select>
+            </div>
+            <div>
+                <label for="editStkRoleDesc" class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Deskripsi Peran & Kerja Sama</label>
+                <textarea id="editStkRoleDesc" name="role_desc" rows="3" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#4A2C11] transition-all" required></textarea>
+            </div>
+            <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                <button type="button" onclick="closeEditStakeholderModal()" class="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-black uppercase tracking-widest transition-all">Batal</button>
+                <button type="submit" class="px-6 py-3 bg-[#4A2C11] hover:bg-[#3D2511] text-white rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-md">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openHistoryModal() {
+        document.getElementById('historyModal').classList.remove('hidden');
+    }
+    function closeHistoryModal() {
+        document.getElementById('historyModal').classList.add('hidden');
+    }
+
+    function openAddOfficerModal() {
+        document.getElementById('addOfficerModal').classList.remove('hidden');
+    }
+    function closeAddOfficerModal() {
+        document.getElementById('addOfficerModal').classList.add('hidden');
+    }
+
+    function openEditOfficerModal(id, name, position, caption) {
+        document.getElementById('editName').value = name;
+        document.getElementById('editPosition').value = position;
+        document.getElementById('editCaption').value = caption;
+        document.getElementById('editOfficerForm').action = "/admin/tentang-kami/edit-pengurus/" + id;
+        document.getElementById('editOfficerModal').classList.remove('hidden');
+    }
+    function closeEditOfficerModal() {
+        document.getElementById('editOfficerModal').classList.add('hidden');
+    }
+
+    function openAddStakeholderModal() {
+        document.getElementById('addStakeholderModal').classList.remove('hidden');
+    }
+    function closeAddStakeholderModal() {
+        document.getElementById('addStakeholderModal').classList.add('hidden');
+    }
+
+    function openEditStakeholderModal(id, name, role_title, role_desc, category, icon_type) {
+        document.getElementById('editStkName').value = name;
+        document.getElementById('editStkRoleTitle').value = role_title;
+        document.getElementById('editStkRoleDesc').value = role_desc;
+        document.getElementById('editStkCategory').value = category;
+        document.getElementById('editStkIconType').value = icon_type;
+        document.getElementById('editStakeholderForm').action = "/admin/tentang-kami/edit-stakeholder/" + id;
+        document.getElementById('editStakeholderModal').classList.remove('hidden');
+    }
+    function closeEditStakeholderModal() {
+        document.getElementById('editStakeholderModal').classList.add('hidden');
+    }
+</script>
+{% endif %}
+
+{% endblock %}

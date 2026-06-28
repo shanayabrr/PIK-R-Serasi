@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  .premium-article-content p {
+      margin-bottom: 1.5rem;
+      text-align: justify;
+      text-justify: inter-word;
+      line-height: 1.85;
+      color: #334155; /* text-slate-700 */
+  }
+  .premium-article-content h1, .premium-article-content h2, .premium-article-content h3 {
+      font-weight: 800;
+      color: #1e293b;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      letter-spacing: -0.025em;
+  }
+  .premium-article-content ul, .premium-article-content ol {
+      margin-left: 1.5rem;
+      margin-bottom: 1.5rem;
+      list-style-type: disc;
+      line-height: 1.8;
+  }
+  .premium-article-content li {
+      margin-bottom: 0.5rem;
+  }
+</style>
+<div class="max-w-4xl mx-auto py-10 fade-in">
+    <a href="{{ url_for('education') }}" class="inline-flex items-center text-pink-600 font-black text-xs uppercase tracking-[0.2em] mb-8 hover:-translate-x-2 transition-transform">
+        <span class="mr-2">←</span> Kembali ke Portal Edukasi
+    </a>
+
+    <div class="premium-card p-10 md:p-16 rounded-[3rem] shadow-3xl bg-white relative overflow-hidden">
+        {# Decorative Elements #}
+        <div class="absolute -right-20 -top-20 w-64 h-64 bg-pink-50 rounded-full opacity-50 blur-3xl"></div>
+        <div class="absolute -left-20 bottom-0 w-48 h-48 bg-indigo-50 rounded-full opacity-40 blur-2xl"></div>
+
+        <div class="relative z-10">
+            <div class="flex items-center gap-3 mb-8">
+                <span class="bg-pink-100 text-pink-700 text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">Edukasi Pilihan</span>
+                <span class="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">Materi #{{ article.id }}</span>
+            </div>
+
+            <h1 class="text-4xl md:text-6xl font-black text-slate-800 tracking-tighter leading-tight mb-8">
+                {{ article.title }}
+            </h1>
+
+            <div class="flex items-center gap-4 mb-12 border-b border-slate-100 pb-8">
+                <div class="w-12 h-12 bg-slate-800 rounded-2xl flex items-center justify-center text-white font-black text-lg shadow-xl">
+                    {{ article.author[0] | upper }}
+                </div>
+                <div>
+                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Penulis Materi</p>
+                    <p class="text-sm font-bold text-slate-800 uppercase tracking-tighter">{{ article.author }}</p>
+                </div>
+            </div>
+
+            <div class="premium-article-content max-w-none text-lg">
+                {{ article.content | safe }}
+            </div>
+
+            {% if article.dokumen %}
+            <div class="mt-16 p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6 group hover:bg-emerald-50 transition-colors">
+                <div class="flex items-center gap-5">
+                    <div class="w-16 h-16 bg-white rounded-3xl flex items-center justify-center text-3xl shadow-xl group-hover:scale-110 transition-transform">📄</div>
+                    <div>
+                        <h4 class="text-lg font-black text-slate-800 tracking-tight">Dokumen Terlampir</h4>
+                        <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mt-1">Unduh untuk membaca offline</p>
+                    </div>
+                </div>
+                <a href="{{ url_for('static', filename='uploads/' + article.dokumen) }}" download
+                   class="btn-premium text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl flex items-center gap-3">
+                    Unduh Sekarang <span class="text-lg">↓</span>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# COMMENT SECTION IN DETAIL #}
+    <div class="mt-16">
+        <h3 class="text-2xl font-black text-slate-800 tracking-tighter mb-10">Ulasan & Diskusi Materi</h3>
+        
+        <div class="space-y-6 mb-12">
+            {% if article.comments %}
+                {% for c in article.comments %}
+                <div class="premium-card p-8 rounded-[2rem] bg-white border-slate-50 flex gap-6 group">
+                    <div class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-lg font-black text-slate-400 flex-shrink-0 group-hover:bg-pink-100 group-hover:text-pink-600 transition-colors">
+                        {{ c.username[0] | upper }}
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <h4 class="text-sm font-black text-slate-800 uppercase tracking-tight">{{ c.username }}</h4>
+                                <div class="flex text-amber-400 text-xs mt-1">
+                                    {% for i in range(c.rating) %}⭐{% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {% if c.text %}
+                        <p class="text-slate-600 leading-relaxed italic text-md mt-4">"{{ c.text }}"</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="premium-card p-12 rounded-[2.5rem] border-dashed border-slate-200 text-center text-slate-400">
+                    <p class="italic font-bold">Belum ada ulasan untuk materi ini. Jadi yang pertama mengulas!</p>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if session.get('role') == 'anggota_remaja' %}
+        <div class="premium-card p-10 rounded-[2.5rem] bg-slate-900 text-white relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-pink-600 rounded-full blur-[80px] opacity-40"></div>
+            <div class="relative z-10">
+                <h3 class="text-xl font-black tracking-tight mb-8">Berikan Ulasanmu</h3>
+                <form action="{{ url_for('add_comment', article_id=article.id) }}" method="POST" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="md:col-span-3">
+                            <textarea name="comment" rows="2" 
+                                      class="w-full bg-white/10 border border-white/20 rounded-2xl p-4 text-sm outline-none focus:ring-2 focus:ring-pink-500 focus:bg-white/20 transition-all text-white placeholder:text-slate-400"
+                                      placeholder="Apa pendapatmu tentang materi ini?"></textarea>
+                        </div>
+                        <div class="flex flex-col gap-4">
+                            <select name="rating" class="w-full bg-white/10 border border-white/20 rounded-2xl p-4 text-sm font-black outline-none focus:ring-2 focus:ring-pink-500">
+                                <option value="5" class="text-slate-800">5 ⭐⭐⭐⭐⭐</option>
+                                <option value="4" class="text-slate-800">4 ⭐⭐⭐⭐</option>
+                                <option value="3" class="text-slate-800">3 ⭐⭐⭐</option>
+                                <option value="2" class="text-slate-800">2 ⭐⭐</option>
+                                <option value="1" class="text-slate-800">1 ⭐</option>
+                            </select>
+                            <button type="submit" class="btn-premium text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl">Kirim</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

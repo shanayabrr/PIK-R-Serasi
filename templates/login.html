@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="min-h-[70vh] flex items-center justify-center p-6 fade-in">
+    <div class="premium-card w-full max-w-lg p-12 rounded-[3rem] relative overflow-hidden">
+        {# Decorative Blob #}
+        <div class="absolute -right-20 -top-20 w-48 h-48 bg-[#f7ede0] rounded-full opacity-40 blur-2xl"></div>
+        
+        <div class="relative z-10">
+            <div class="text-center mb-12">
+                <div class="w-20 h-20 bg-slate-800 rounded-3xl flex items-center justify-center text-3xl shadow-2xl mx-auto mb-6">🔐</div>
+                <h2 class="text-4xl font-black text-slate-800 tracking-tighter">Selamat Datang</h2>
+                <p class="text-slate-400 font-bold uppercase tracking-[0.2em] text-[10px] mt-2">Silakan masuk ke portal PIK-R SERASI</p>
+            </div>
+
+            <form action="{{ url_for('login') }}" method="POST" class="space-y-8">
+                <div class="space-y-2">
+                    <label for="username" class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Username</label>
+                    <input type="text" name="username" id="username" required 
+                        class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm outline-none focus:ring-2 focus:ring-pink-500 focus:bg-white transition-all font-bold text-slate-700"
+                        placeholder="Masukkan username kamu">
+                </div>
+
+                <div class="space-y-2">
+                    <label for="password" class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Password</label>
+                    <input type="password" name="password" id="password" required 
+                        class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm outline-none focus:ring-2 focus:ring-pink-500 focus:bg-white transition-all font-bold text-slate-700"
+                        placeholder="••••••••">
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit" 
+                        class="btn-premium w-full text-white py-5 rounded-2xl font-black text-xs tracking-[0.2em] uppercase shadow-2xl hover:scale-[1.02] transition-transform">
+                        MASUK SEKARANG
+                    </button>
+                </div>
+
+                <div class="text-center pt-4 border-t border-slate-100">
+                    <p class="text-slate-400 text-xs font-bold">
+                        Belum punya akun? 
+                        <a href="{{ url_for('register') }}" class="text-[#8b6e50] hover:text-[#6b543c] font-black uppercase tracking-widest ml-1">Daftar</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

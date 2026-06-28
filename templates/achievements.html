@@ -1,0 +1,395 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+
+<div class="max-w-6xl mx-auto">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+        <div>
+            <h2 class="text-4xl font-black text-slate-800 tracking-tighter">Galeri Prestasi PIK-R SERASI</h2>
+            <p class="text-slate-500 mt-2 font-medium italic">Mengapresiasi dedikasi, merayakan prestasi! 🏆</p>
+        </div>
+
+        {% if session.get('role') in ['admin_pikr', 'konselor'] %}
+        <button onclick="document.getElementById('modalAdd').classList.remove('hidden')"
+            class="btn-premium text-white px-6 py-3 rounded-2xl font-bold text-sm shadow-xl flex items-center gap-2">
+            <span>+</span> Bagikan Prestasi
+        </button>
+        {% endif %}
+    </div>
+
+    {# GRID ARTIKEL PRESTASI #}
+    {% if achievements %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {% for ach in achievements %}
+        <div class="premium-card p-8 rounded-[2.5rem] flex flex-col justify-between relative group overflow-hidden h-full">
+            <div class="absolute -right-12 -top-12 w-40 h-40 bg-[#FBE1B3]/40 rounded-full opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-700 pointer-events-none"></div>
+            
+            {% if session.get('role') == 'admin_pikr' or (session.get('role') == 'konselor' and ach.author == session.get('username')) %}
+            <div class="absolute top-6 right-6 z-20">
+                <button onclick="toggleAchMenu('{{ ach.id }}')" class="w-10 h-10 flex items-center justify-center bg-white/80 backdrop-blur-sm text-slate-400 rounded-2xl hover:bg-slate-800 hover:text-white transition-all shadow-sm border border-slate-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
+                </button>
+                <div id="achMenu-{{ ach.id }}" class="hidden absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-2xl border border-slate-100 z-[60] overflow-hidden animate-fade-in">
+                    <button onclick='openEditAchModal({{ ach.id }}, {{ (ach.dokumen or "")|tojson }})'
+                       class="block w-full text-left px-5 py-4 text-[10px] text-blue-600 font-black hover:bg-blue-50 transition-colors uppercase tracking-widest">
+                        ✏️ Edit Prestasi
+                    </button>
+                    <a href="{{ url_for('delete_achievement', ach_id=ach.id) }}" onclick="return confirm('Hapus prestasi ini?')"
+                       class="block px-5 py-4 text-[10px] text-red-600 font-black hover:bg-red-50 transition-colors uppercase tracking-widest">
+                        🗑️ Hapus Prestasi
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="relative z-10">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="bg-[#FBE1B3] text-[#4A2C11] text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-[0.1em]">Prestasi</span>
+                    <span class="text-[9px] font-black text-slate-300 uppercase tracking-widest">ID #{{ ach.id }}</span>
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-auto">{{ ach.date }}</span>
+                </div>
+
+                {# Foto thumbnail row for card #}
+                {% if ach.foto_list %}
+                <div class="relative w-full h-36 overflow-hidden rounded-2xl mb-4">
+                    <img src="{{ url_for('static', filename='uploads/' + ach.foto_list[0]) }}" alt="{{ ach.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                    {% if ach.foto_list | length > 1 %}
+                    <span class="absolute top-2 right-2 bg-black/60 backdrop-blur-sm text-white text-[9px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider">📸 +{{ ach.foto_list | length - 1 }} Foto</span>
+                    {% endif %}
+                </div>
+                {% endif %}
+                
+                <h3 class="text-2xl font-black mb-3 pr-10 text-slate-800 leading-tight group-hover:text-[#8b6e50] transition-colors">{{ ach.title }}</h3>
+
+                {% if ach.content and ach.content.strip() != "" %}
+                <p class="text-slate-500 mb-6 text-sm leading-relaxed">{{ ach.content|striptags|truncate(140) }}</p>
+                <a href="{{ url_for('achievement_detail', achievement_id=ach.id) }}"
+                    class="inline-flex items-center text-[#8b6e50] text-xs font-black uppercase tracking-widest hover:translate-x-2 transition-transform mb-6">
+                    Baca Selengkapnya
+                </a>
+                {% elif ach.foto_list %}
+                <a href="{{ url_for('achievement_detail', achievement_id=ach.id) }}"
+                    class="inline-flex items-center text-[#8b6e50] text-xs font-black uppercase tracking-widest hover:translate-x-2 transition-transform mb-6">
+                    Lihat Foto Selengkapnya
+                </a>
+                {% else %}
+                <div class="bg-slate-50 p-4 rounded-2xl border border-dashed border-slate-200 mb-6 flex items-center gap-3">
+                    <span class="text-xl">📄</span>
+                    <p class="text-xs text-slate-400 font-bold italic">Detail prestasi dibagikan dalam bentuk dokumen lampiran.</p>
+                </div>
+                {% endif %}
+
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-8 h-8 bg-[#4A2C11] rounded-xl flex items-center justify-center text-xs font-bold text-white uppercase">{{ ach.author[0] }}</div>
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Oleh {{ ach.author }}</span>
+                </div>
+
+                {% if ach.dokumen %}
+                <div class="p-4 bg-[#FBE1B3]/30 rounded-2xl border border-[#FBE1B3]/60 flex items-center justify-between shadow-sm group/doc transition-all hover:bg-[#FBE1B3]/50 mb-6">
+                    <div class="flex items-center gap-3 truncate pr-4">
+                        <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">🏆</div>
+                        <span class="text-[10px] font-black text-[#4A2C11] truncate">{{ ach.dokumen.split('_', 1)[1] if '_' in ach.dokumen else ach.dokumen }}</span>
+                    </div>
+                    <a href="{{ url_for('static', filename='uploads/' + ach.dokumen) }}" download
+                        class="bg-[#4A2C11] text-white px-4 py-2 rounded-xl text-[10px] font-black hover:bg-[#3D2511] transition-all uppercase tracking-wider">Unduh</a>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="mt-auto border-t border-slate-100 pt-6 relative z-10">
+                <h4 class="text-[10px] font-black text-slate-400 mb-4 uppercase tracking-[0.2em]">Ulasan Terkini</h4>
+                <div class="space-y-3 mb-6 max-h-48 overflow-y-auto pr-2 custom-scroll">
+                    {% if ach.comments %}
+                    {% for c in ach.comments %}
+                    <div class="bg-slate-50/50 p-4 rounded-2xl border border-slate-100 group/comment relative">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="flex items-center gap-2">
+                                <span class="font-black text-slate-800 text-[10px]">{{ c.username }}</span>
+                                <span class="bg-amber-100 text-amber-700 font-black text-[9px] px-2 py-0.5 rounded-md uppercase">⭐ {{ c.rating }}</span>
+                            </div>
+                            <div class="flex gap-2 opacity-0 group-hover/comment:opacity-100 transition-opacity">
+                                {% if c.username == session.get('username') %}
+                                <button onclick="openEditModal('{{ ach.id }}', '{{ c.id }}', '{{ c.text }}')"
+                                    class="text-blue-500 hover:text-blue-700 text-[9px] font-black uppercase tracking-widest">Edit</button>
+                                {% endif %}
+                                {% if session.get('role') == 'admin_pikr' or c.username == session.get('username') %}
+                                <a href="{{ url_for('delete_achievement_comment', ach_id=ach.id, comment_id=c.id) }}"
+                                    onclick="return confirm('Hapus ulasan ini?')"
+                                    class="text-red-500 hover:text-red-700 text-[9px] font-black uppercase tracking-widest">Hapus</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if c.text %}
+                        <p class="text-slate-500 italic text-[11px] leading-relaxed">"{{ c.text }}"</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="text-center py-4 text-slate-300 italic text-xs">Belum ada ulasan prestasi.</div>
+                    {% endif %}
+                </div>
+
+                {% if session.get('role') == 'anggota_remaja' %}
+                <form action="{{ url_for('add_achievement_comment', ach_id=ach.id) }}" method="POST" class="flex gap-2 items-center">
+                    <input type="text" name="comment" placeholder="Tulis ulasan prestasi (Opsional)..." required
+                        class="flex-1 text-xs p-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-[#4A2C11] focus:bg-white transition-all">
+                    <select name="rating" class="text-xs p-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-slate-600 outline-none">
+                        <option value="5">5 ⭐</option>
+                        <option value="4">4 ⭐</option>
+                        <option value="3">3 ⭐</option>
+                        <option value="2">2 ⭐</option>
+                        <option value="1">1 ⭐</option>
+                    </select>
+                    <button type="submit" class="bg-[#4A2C11] text-white p-3 rounded-2xl hover:bg-[#3D2511] transition-all shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-20 bg-white rounded-[2rem] border border-[#FBE1B3] shadow-sm">
+        <div class="text-6xl mb-4">🏆</div>
+        <h3 class="text-xl font-bold text-[#4A2C11]">Belum ada prestasi yang dibagikan</h3>
+        <p class="text-slate-400 text-sm mt-2">Daftar prestasi PIK-R Serasi akan tampil di halaman ini.</p>
+    </div>
+    {% endif %}
+</div>
+
+{# MODAL ADD PRESTASI #}
+<div id="modalAdd" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+    <div class="premium-card bg-white rounded-[2.5rem] w-full max-w-lg p-10 shadow-3xl animate-fade-in relative overflow-hidden">
+        <div class="absolute -right-20 -top-20 w-48 h-48 bg-[#FBE1B3]/30 rounded-full opacity-35"></div>
+        <div class="relative z-10">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h3 class="text-2xl font-black text-slate-800 tracking-tighter">Bagikan Prestasi</h3>
+                    <p class="text-[10px] font-black text-[#8b6e50] uppercase tracking-[0.2em] mt-1">Sistem Administrasi PIK-R SERASI</p>
+                </div>
+                <button onclick="document.getElementById('modalAdd').classList.add('hidden')" class="w-10 h-10 flex items-center justify-center bg-slate-100 rounded-2xl text-slate-400 hover:bg-[#4A2C11] hover:text-white transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <form action="{{ url_for('add_achievement') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-[0.2em]">Judul Prestasi</label>
+                    <input type="text" name="title" required class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-[#4A2C11]" placeholder="Masukkan judul prestasi/penghargaan...">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-[0.2em]">📅 Tanggal Kegiatan / Prestasi</label>
+                    <input type="datetime-local" name="date" id="addAchDate" required class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-[#4A2C11]">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-[0.2em]">Konten Cerita (Opsional)</label>
+                    <textarea name="content" id="editor_admin"></textarea>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-[0.2em]">📸 Foto Lampiran (Bisa Pilih Banyak)</label>
+                    <div id="addAchPhotoPreviewWrap" class="flex gap-2 overflow-x-auto mb-3 py-1"></div>
+                    <input type="file" name="dokumen" accept="image/*" multiple
+                           onchange="previewAchPhotos(this, 'addAchPhotoPreviewWrap')"
+                           class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-slate-800 file:text-white">
+                    <p class="text-[9px] text-slate-300 mt-1 font-medium">Format: JPG, PNG, WEBP · Anda dapat memilih lebih dari 1 foto</p>
+                </div>
+                <button type="submit" class="btn-premium w-full text-white py-4 rounded-2xl font-bold text-sm shadow-xl mt-4">
+                    Simpan & Terbitkan Prestasi
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{# MODAL EDIT PRESTASI #}
+<div id="modalEditAch" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+  <div class="premium-card bg-white rounded-[2.5rem] w-full max-w-lg p-10 shadow-3xl animate-fade-in relative overflow-hidden max-h-[90vh] overflow-y-auto">
+    <div class="absolute -right-20 -top-20 w-48 h-48 bg-blue-50 rounded-full opacity-40"></div>
+    <div class="relative z-10">
+      <div class="flex justify-between items-center mb-8">
+        <div>
+          <h3 class="text-2xl font-black text-slate-800 tracking-tighter">Edit Prestasi</h3>
+          <p class="text-[10px] font-black text-blue-500 uppercase tracking-[0.2em] mt-1">Sistem Administrasi PIK-R SERASI</p>
+        </div>
+        <button onclick="document.getElementById('modalEditAch').classList.add('hidden')" class="w-10 h-10 flex items-center justify-center bg-slate-100 rounded-2xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <form id="formEditAch" method="POST" enctype="multipart/form-data" class="space-y-6">
+        <input type="hidden" name="deleted_photos" id="editAchDeletedPhotosInput" value="">
+        <div>
+          <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-[0.2em]">Judul Prestasi</label>
+          <input type="text" name="title" id="editAchTitle" required class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500" placeholder="Judul prestasi...">
+        </div>
+        <div>
+          <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-[0.2em]">📅 Tanggal Kegiatan / Prestasi</label>
+          <input type="datetime-local" name="date" id="editAchDate" required class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+          <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-[0.2em]">Konten Cerita (Opsional)</label>
+          <textarea name="content" id="editAchContent" rows="7" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 text-sm leading-relaxed resize-none" placeholder="Ceritakan detail prestasi..."></textarea>
+        </div>
+        <div>
+          <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-[0.2em]">📸 Foto / Lampiran (Bisa Pilih Banyak)</label>
+          <p id="editAchCurrentFile" class="text-[10px] text-slate-400 italic mb-1"></p>
+          <div id="editAchCurrentPhotoWrap" class="flex gap-2 overflow-x-auto mb-3 py-1"></div>
+          <div id="editAchNewPhotoPreviewWrap" class="flex gap-2 overflow-x-auto mb-3 py-1"></div>
+          <input type="file" name="dokumen" accept="image/*" multiple
+                 id="editAchFotoInput"
+                 onchange="previewAchPhotos(this, 'editAchNewPhotoPreviewWrap')"
+                 class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-slate-800 file:text-white">
+          <p class="text-[9px] text-slate-300 mt-1 font-medium">Format: JPG, PNG, WEBP · Foto baru ditambahkan, foto lama bisa dihapus satu per satu di atas.</p>
+        </div>
+        <button type="submit" class="w-full py-4 rounded-2xl font-black text-sm shadow-xl mt-2 text-white" style="background: linear-gradient(135deg,#3b82f6,#1d4ed8)">
+          💾 Simpan Perubahan
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+{# MODAL EDIT COMMENT PRESTASI #}
+<div id="modalEditComment" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[110] flex items-center justify-center p-4">
+    <div class="premium-card bg-white rounded-3xl w-full max-w-sm p-8 shadow-2xl animate-fade-in">
+        <h3 class="text-lg font-black text-slate-800 mb-2 tracking-tighter">Perbaiki Ulasan</h3>
+        <p class="text-[9px] font-black text-blue-600 uppercase tracking-widest mb-6">Pembaruan Komentar</p>
+        <form id="formEditComment" method="POST" class="space-y-4">
+            <textarea id="modalCommentText" name="comment" required rows="4"
+                class="w-full p-4 text-sm bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-[#4A2C11]"></textarea>
+            <div class="flex gap-3">
+                <button type="button" onclick="document.getElementById('modalEditComment').classList.add('hidden')"
+                    class="flex-1 bg-slate-100 text-slate-600 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-200 transition-all">Batal</button>
+                <button type="submit"
+                    class="flex-1 bg-slate-800 text-white py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-[#4A2C11] transition-all shadow-md">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    var uploadUrl = "{{ url_for('upload_image') }}";
+    if (document.getElementById('editor_admin')) {
+        CKEDITOR.replace('editor_admin', {
+            filebrowserUploadUrl: uploadUrl,
+            filebrowserUploadMethod: 'form',
+            height: 200
+        });
+    }
+
+    function openEditModal(achId, commentId, currentText) {
+        var actionUrl = "/prestasi/edit_comment/" + achId + "/" + commentId;
+        document.getElementById('formEditComment').action = actionUrl;
+        document.getElementById('modalCommentText').value = currentText;
+        document.getElementById('modalEditComment').classList.remove('hidden');
+    }
+
+    async function openEditAchModal(achId, fotoStr) {
+        // Close dropdown
+        document.querySelectorAll('[id^="achMenu-"]').forEach(m => m.classList.add('hidden'));
+        try {
+            const resp = await fetch(`/admin/prestasi/edit/${achId}`);
+            const data = await resp.json();
+            document.getElementById('editAchTitle').value = data.title || '';
+            document.getElementById('editAchContent').value = data.content || '';
+            document.getElementById('editAchDate').value = data.date || '';
+            document.getElementById('formEditAch').action = `/admin/prestasi/edit/${achId}`;
+
+            // Reset deleted photos & new preview
+            achDeletedPhotos = [];
+            document.getElementById('editAchDeletedPhotosInput').value = '';
+            const newPreviewWrap = document.getElementById('editAchNewPhotoPreviewWrap');
+            newPreviewWrap.innerHTML = '';
+            document.getElementById('editAchFotoInput').value = '';
+
+            // Load current photos with delete buttons
+            const currentWrap = document.getElementById('editAchCurrentPhotoWrap');
+            currentWrap.innerHTML = '';
+            const photoInfo = document.getElementById('editAchCurrentFile');
+            if (fotoStr) {
+                const photoList = fotoStr.split(',').filter(f => f.trim());
+                photoInfo.textContent = `\ud83d\udcf7 ${photoList.length} foto saat ini (klik \u2715 untuk menghapus):`;
+                photoList.forEach(f => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'relative w-20 h-20 flex-shrink-0';
+                    const img = document.createElement('img');
+                    img.src = '/static/uploads/' + f;
+                    img.className = 'w-full h-full object-cover rounded-xl border border-blue-100';
+                    const delBtn = document.createElement('button');
+                    delBtn.type = 'button'; delBtn.innerHTML = '\u2715';
+                    delBtn.className = 'absolute -top-1.5 -right-1.5 w-5 h-5 bg-rose-600 text-white rounded-full flex items-center justify-center text-[10px] font-black hover:bg-rose-700 transition-all shadow-md';
+                    delBtn.onclick = function() {
+                        itemDiv.remove();
+                        achDeletedPhotos.push(f);
+                        document.getElementById('editAchDeletedPhotosInput').value = achDeletedPhotos.join(',');
+                        const remaining = photoList.length - achDeletedPhotos.length;
+                        photoInfo.textContent = remaining > 0
+                            ? `\ud83d\udcf7 ${remaining} foto saat ini (klik \u2715 untuk menghapus):`
+                            : 'Semua foto akan dihapus.';
+                    };
+                    itemDiv.appendChild(img); itemDiv.appendChild(delBtn);
+                    currentWrap.appendChild(itemDiv);
+                });
+                currentWrap.style.display = 'flex';
+            } else {
+                photoInfo.textContent = 'Belum ada foto';
+                currentWrap.style.display = 'none';
+            }
+
+            document.getElementById('modalEditAch').classList.remove('hidden');
+        } catch(e) {
+            alert('Gagal memuat data prestasi.');
+        }
+    }
+
+    function previewAchPhotos(input, wrapId) {
+        const wrap = document.getElementById(wrapId);
+        wrap.innerHTML = '';
+        if (input.files && input.files.length > 0) {
+            for (let i = 0; i < input.files.length; i++) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'w-20 h-20 object-cover rounded-xl border border-amber-100 flex-shrink-0';
+                    wrap.appendChild(img);
+                };
+                reader.readAsDataURL(input.files[i]);
+            }
+        }
+    }
+
+    let achDeletedPhotos = [];
+
+    function toggleAchMenu(id) {
+        const menu = document.getElementById('achMenu-' + id);
+        document.querySelectorAll('[id^="achMenu-"]').forEach(m => {
+            if (m.id !== 'achMenu-' + id) m.classList.add('hidden');
+        });
+        menu.classList.toggle('hidden');
+    }
+
+    window.addEventListener('click', (e) => {
+        if (!e.target.closest('.relative')) {
+            document.querySelectorAll('[id^="achMenu-"]').forEach(m => m.classList.add('hidden'));
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const now = new Date();
+        const tzoffset = now.getTimezoneOffset() * 60000;
+        const localISOTime = (new Date(now - tzoffset)).toISOString().slice(0, 16);
+        const addDateInput = document.getElementById('addAchDate');
+        if (addDateInput) {
+            addDateInput.value = localISOTime;
+        }
+    });
+</script>
+
+<style>
+    .custom-scroll::-webkit-scrollbar { width: 4px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
+    .custom-scroll::-webkit-scrollbar-thumb:hover { background: #CBD5E1; }
+</style>
+{% endblock %}

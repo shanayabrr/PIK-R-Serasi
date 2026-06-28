@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv/
+env/
+venv/
+instance/
+.idea/
+.vscode/
+.git/
+.gemini/
+antigravity/
+brain/
+credentials.json
