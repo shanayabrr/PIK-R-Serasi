@@ -17,6 +17,12 @@
             --glass-border: rgba(204, 177, 141, 0.35);
         }
         
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+            width: 100%;
+        }
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             scroll-behavior: smooth;
@@ -217,139 +223,141 @@
 </head>
 <body class="bg-[#FCFBF9] font-sans leading-normal tracking-normal text-slate-800">
 
-    <nav class="glass-nav p-4 shadow-lg sticky top-0 z-50">
+    <nav class="glass-nav p-3 sm:p-4 shadow-lg sticky top-0 z-50">
         <div class="container mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-10">
-                <a href="{{ url_for('index') }}" class="text-[#8b6e50] font-black text-2xl tracking-tighter flex items-center gap-2 hover:text-[#6b543c] transition-colors">
-                    <img src="{{ url_for('static', filename='uploads/IMG_9007-removebg-preview.png') }}" alt="Logo PIK-R" class="w-20 h-20 object-contain filter drop-shadow-sm bg-white rounded-xl p-1">
+            <div class="flex items-center gap-4 lg:gap-8">
+                <a href="{{ url_for('index') }}" class="text-[#8b6e50] font-black tracking-tighter flex items-center gap-2 sm:gap-3 hover:text-[#6b543c] transition-colors">
+                    <img src="{{ url_for('static', filename='uploads/IMG_9007-removebg-preview.png') }}" alt="Logo PIK-R" class="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 object-contain filter drop-shadow-sm bg-white rounded-xl p-1">
                     <div class="flex flex-col">
-                    <span class="leading-none text-6xl">PIK-R SERASI</span>
-                    <span class="text-sm text-[#8b6e50]/80 tracking-[0.2em] mt-0.5 font-bold">PORTAL</span>
+                        <span class="leading-none text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl">PIK-R SERASI</span>
+                        <span class="text-[8px] sm:text-[10px] md:text-xs text-[#8b6e50]/80 tracking-[0.2em] mt-0.5 font-bold">PORTAL</span>
                     </div>
                 </a>
 
                 {# MAIN NAVIGATION LINKS (DESKTOP) #}
-                <div class="hidden xl:flex items-center space-x-2">
-                    <a href="{{ url_for('education_event') }}" class="px-4 py-2 text-[#8b6e50] hover:text-[#6b543c] rounded-xl text-2xl font-bold capitalize transition-all {% if request.endpoint == 'education_event' %}bg-white/60 shadow-sm text-[#6b543c]{% else %}hover:bg-white/40{% endif %}">Edukasi & Event</a>
-                    <a href="{{ url_for('counseling') }}" class="px-4 py-2 text-[#8b6e50] hover:text-[#6b543c] rounded-xl text-2xl font-bold capitalize transition-all {% if request.endpoint == 'counseling' %}bg-white/60 shadow-sm text-[#6b543c]{% else %}hover:bg-white/40{% endif %}">Konseling</a>
-                    <a href="{{ url_for('forum') }}" class="px-4 py-2 text-[#8b6e50] hover:text-[#6b543c] rounded-xl text-2xl font-bold capitalize transition-all {% if request.endpoint == 'forum' %}bg-white/60 shadow-sm text-[#6b543c]{% else %}hover:bg-white/40{% endif %}">Forum</a>
+                <div class="hidden lg:flex items-center space-x-1 xl:space-x-2">
+                    <a href="{{ url_for('education_event') }}" class="px-3 py-1.5 text-[#8b6e50] hover:text-[#6b543c] rounded-xl text-sm xl:text-base font-bold capitalize transition-all {% if request.endpoint == 'education_event' %}bg-white/60 shadow-sm text-[#6b543c]{% else %}hover:bg-white/40{% endif %}">Edukasi & Event</a>
+                    <a href="{{ url_for('counseling') }}" class="px-3 py-1.5 text-[#8b6e50] hover:text-[#6b543c] rounded-xl text-sm xl:text-base font-bold capitalize transition-all {% if request.endpoint == 'counseling' %}bg-white/60 shadow-sm text-[#6b543c]{% else %}hover:bg-white/40{% endif %}">Konseling</a>
+                    <a href="{{ url_for('forum') }}" class="px-3 py-1.5 text-[#8b6e50] hover:text-[#6b543c] rounded-xl text-sm xl:text-base font-bold capitalize transition-all {% if request.endpoint == 'forum' %}bg-white/60 shadow-sm text-[#6b543c]{% else %}hover:bg-white/40{% endif %}">Forum</a>
                     <div class="flex items-center relative group rounded-xl transition-all {% if request.endpoint in ['about', 'achievements', 'innovations'] %}bg-white/60 shadow-sm{% endif %}">
-                        <a href="{{ url_for('about') }}" class="pl-4 pr-2 py-2 text-[#8b6e50] hover:text-[#6b543c] rounded-l-xl text-2xl font-bold capitalize transition-all {% if request.endpoint not in ['about', 'achievements', 'innovations'] %}hover:bg-white/40{% endif %}">Tentang Kami</a>
-                        <button class="px-2 py-2 text-[#8b6e50] hover:text-[#6b543c] rounded-r-xl text-base font-bold capitalize transition-all focus:outline-none flex items-center h-full {% if request.endpoint not in ['about', 'achievements', 'innovations'] %}hover:bg-white/40{% endif %}">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"/></svg>
+                        <a href="{{ url_for('about') }}" class="pl-3 pr-1 py-1.5 text-[#8b6e50] hover:text-[#6b543c] rounded-l-xl text-sm xl:text-base font-bold capitalize transition-all {% if request.endpoint not in ['about', 'achievements', 'innovations'] %}hover:bg-white/40{% endif %}">Tentang Kami</a>
+                        <button class="px-1 py-1.5 text-[#8b6e50] hover:text-[#6b543c] rounded-r-xl text-xs font-bold capitalize transition-all focus:outline-none flex items-center h-full {% if request.endpoint not in ['about', 'achievements', 'innovations'] %}hover:bg-white/40{% endif %}">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"/></svg>
                         </button>
                         <!-- Dropdown Menu -->
-                        <div class="absolute top-full right-0 mt-2 w-52 bg-white rounded-2xl shadow-2xl border border-[#e8d7c3] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 overflow-hidden transform origin-top-right group-hover:scale-100 scale-95">
-                            <a href="{{ url_for('achievements') }}" class="block px-5 py-3 text-base text-slate-700 font-bold hover:bg-[#f7ede0] hover:text-[#8b6e50] transition-colors {% if request.endpoint == 'achievements' %}bg-[#f7ede0] text-[#8b6e50]{% endif %}">🏆 Prestasi</a>
-                            <a href="{{ url_for('innovations') }}" class="block px-5 py-3 text-base text-slate-700 font-bold hover:bg-[#f7ede0] hover:text-[#8b6e50] transition-colors {% if request.endpoint == 'innovations' %}bg-[#f7ede0] text-[#8b6e50]{% endif %}">💡 Inovasi & Proker</a>
+                        <div class="absolute top-full right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-[#e8d7c3] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 overflow-hidden transform origin-top-right group-hover:scale-100 scale-95">
+                            <a href="{{ url_for('achievements') }}" class="block px-4 py-2.5 text-xs xl:text-sm text-slate-700 font-bold hover:bg-[#f7ede0] hover:text-[#8b6e50] transition-colors {% if request.endpoint == 'achievements' %}bg-[#f7ede0] text-[#8b6e50]{% endif %}">🏆 Prestasi</a>
+                            <a href="{{ url_for('innovations') }}" class="block px-4 py-2.5 text-xs xl:text-sm text-slate-700 font-bold hover:bg-[#f7ede0] hover:text-[#8b6e50] transition-colors {% if request.endpoint == 'innovations' %}bg-[#f7ede0] text-[#8b6e50]{% endif %}">💡 Inovasi & Proker</a>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="flex items-center space-x-4 lg:space-x-6">
+            <div class="flex items-center space-x-2 sm:space-x-4">
                 {% if session.get('user_id') %}
                     <!-- NOTIFICATION BELL -->
                     <div class="relative inline-block text-left">
                         <button id="notifButton" class="relative text-[#8b6e50] hover:text-[#6b543c] focus:outline-none flex items-center transition-transform hover:scale-110 active:scale-95">
-                            <span class="text-2xl">🔔</span>
-                            <span id="notifBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden shadow-sm border border-white">0</span>
+                            <span class="text-xl sm:text-2xl">🔔</span>
+                            <span id="notifBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden shadow-sm border border-white">0</span>
                         </button>
                         <!-- Dropdown -->
-                        <div id="notifDropdown" class="hidden origin-top-right absolute right-0 mt-3 w-80 bg-white rounded-2xl shadow-2xl border border-[#e8d7c3] focus:outline-none z-50 overflow-hidden animate-fade-in">
-                            <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-[#8b6e50] text-white">
-                                <h3 class="text-sm font-black uppercase tracking-widest">Notifikasi</h3>
-                                <div class="flex space-x-2">
-                                    <button onclick="readAllNotifications()" class="text-[9px] font-black uppercase tracking-tighter bg-white/20 hover:bg-white/30 px-2 py-1 rounded-md transition-all">Baca Semua</button>
-                                    <button onclick="clearNotifications()" class="text-[9px] font-black uppercase tracking-tighter bg-white/20 hover:bg-white/30 px-2 py-1 rounded-md transition-all">Hapus</button>
+                        <div id="notifDropdown" class="hidden origin-top-right absolute right-0 mt-3 w-72 sm:w-80 bg-white rounded-2xl shadow-2xl border border-[#e8d7c3] focus:outline-none z-50 overflow-hidden animate-fade-in">
+                            <div class="p-3 sm:p-4 border-b border-gray-100 flex justify-between items-center bg-[#8b6e50] text-white">
+                                <h3 class="text-xs font-black uppercase tracking-widest">Notifikasi</h3>
+                                <div class="flex space-x-1.5 sm:space-x-2">
+                                    <button onclick="readAllNotifications()" class="text-[8px] sm:text-[9px] font-black uppercase tracking-tighter bg-white/20 hover:bg-white/30 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded transition-all">Baca Semua</button>
+                                    <button onclick="clearNotifications()" class="text-[8px] sm:text-[9px] font-black uppercase tracking-tighter bg-white/20 hover:bg-white/30 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded transition-all">Hapus</button>
                                 </div>
                             </div>
-                            <div id="notifList" class="max-h-80 overflow-y-auto custom-scroll">
-                                <div class="p-8 text-center text-xs text-gray-400">Memuat...</div>
+                            <div id="notifList" class="max-h-64 sm:max-h-80 overflow-y-auto custom-scroll">
+                                <div class="p-6 text-center text-xs text-gray-400">Memuat...</div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="h-8 w-px bg-white/20 hidden lg:block"></div>
+                    <div class="h-6 w-px bg-slate-200 hidden lg:block"></div>
 
                     <!-- USER PROFILE DROPDOWN -->
                     <div class="relative inline-block text-left">
-                        <button id="userMenuBtn" class="flex items-center gap-3 text-[#8b6e50] hover:text-[#6b543c] focus:outline-none transition-all group">
+                        <button id="userMenuBtn" class="flex items-center gap-1.5 sm:gap-2.5 text-[#8b6e50] hover:text-[#6b543c] focus:outline-none transition-all group">
                             <div class="flex flex-col items-end hidden lg:flex">
-                                <span class="text-xs font-bold uppercase tracking-widest opacity-70">ID #{{ session['user_id'] }}</span>
-                                <span class="text-base font-bold tracking-tight">{{ session['username'] }}</span>
+                                <span class="text-[9px] font-bold uppercase tracking-widest opacity-70">ID #{{ session['user_id'] }}</span>
+                                <span class="text-sm font-bold tracking-tight">{{ session['username'] }}</span>
                             </div>
-                            <div class="w-10 h-10 bg-[#8b6e50]/10 text-[#8b6e50] rounded-xl flex items-center justify-center font-black group-hover:bg-[#8b6e50]/20 transition-all border border-[#8b6e50]/20 shadow-sm text-lg">
+                            <div class="w-8 h-8 sm:w-9 sm:h-9 bg-[#8b6e50]/10 text-[#8b6e50] rounded-xl flex items-center justify-center font-black group-hover:bg-[#8b6e50]/20 transition-all border border-[#8b6e50]/20 shadow-sm text-sm sm:text-base">
                                 {{ session['username'][0] | upper }}
                             </div>
-                            <span class="text-xs opacity-60">▼</span>
+                            <span class="text-[10px] opacity-60">▼</span>
                         </button>
                         <!-- Dropdown -->
-                        <div id="userDropdown" class="hidden origin-top-right absolute right-0 mt-3 w-56 bg-white rounded-2xl shadow-2xl border border-[#e8d7c3] focus:outline-none z-50 overflow-hidden animate-fade-in">
-                            <div class="p-5 border-b border-gray-50 bg-slate-50/50">
-                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Status Keanggotaan</p>
-                                <div class="flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                    <p class="text-xs font-black text-slate-800 uppercase tracking-tighter">{{ session['role'].replace('_', ' ') }}</p>
+                        <div id="userDropdown" class="hidden origin-top-right absolute right-0 mt-3 w-48 sm:w-56 bg-white rounded-2xl shadow-2xl border border-[#e8d7c3] focus:outline-none z-50 overflow-hidden animate-fade-in">
+                            <div class="p-4 border-b border-gray-55 bg-slate-50/50">
+                                <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Status Keanggotaan</p>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    <p class="text-[10px] font-black text-slate-800 uppercase tracking-tighter">{{ session['role'].replace('_', ' ') }}</p>
                                 </div>
                             </div>
-                            <div class="py-2">
-                                <a href="{{ url_for('dashboard') }}" class="flex items-center gap-3 px-5 py-3 text-sm text-slate-600 font-bold hover:bg-[#f7ede0] transition-colors">
-                                    <span class="text-lg">📊</span> Dashboard
+                            <div class="py-1">
+                                <a href="{{ url_for('dashboard') }}" class="flex items-center gap-2.5 px-4 py-2 text-xs sm:text-sm text-slate-600 font-bold hover:bg-[#f7ede0] transition-colors">
+                                    <span>📊</span> Dashboard
                                 </a>
-                                <a href="{{ url_for('chat') }}" class="flex items-center gap-3 px-5 py-3 text-sm text-slate-600 font-bold hover:bg-[#f7ede0] transition-colors">
-                                    <span class="text-lg">💬</span> Pesan Pribadi
+                                <a href="{{ url_for('chat') }}" class="flex items-center gap-2.5 px-4 py-2 text-xs sm:text-sm text-slate-600 font-bold hover:bg-[#f7ede0] transition-colors">
+                                    <span>💬</span> Pesan Pribadi
                                 </a>
                                 {% if session['role'] == 'admin_pikr' %}
-                                <a href="{{ url_for('admin_users') }}" class="flex items-center gap-3 px-5 py-3 text-sm text-[#8b6e50] font-bold hover:bg-[#f7ede0] transition-colors">
-                                    <span class="text-lg">👥</span> Kelola Pengguna
+                                <a href="{{ url_for('admin_users') }}" class="flex items-center gap-2.5 px-4 py-2 text-xs sm:text-sm text-[#8b6e50] font-bold hover:bg-[#f7ede0] transition-colors">
+                                    <span>👥</span> Kelola Pengguna
                                 </a>
                                 {% endif %}
-                                <a href="{{ url_for('forum') }}" class="flex items-center gap-3 px-5 py-3 text-sm text-slate-600 font-bold hover:bg-[#f7ede0] transition-colors">
-                                    <span class="text-lg">📢</span> Forum & Diskusi
+                                <a href="{{ url_for('forum') }}" class="flex items-center gap-2.5 px-4 py-2 text-xs sm:text-sm text-slate-600 font-bold hover:bg-[#f7ede0] transition-colors">
+                                    <span>📢</span> Forum & Diskusi
                                 </a>
-                                <a href="{{ url_for('profile') }}" class="flex items-center gap-3 px-5 py-3 text-sm text-slate-600 font-bold hover:bg-[#f7ede0] transition-colors">
-                                    <span class="text-lg">👤</span> Profil Saya
+                                <a href="{{ url_for('profile') }}" class="flex items-center gap-2.5 px-4 py-2 text-xs sm:text-sm text-slate-600 font-bold hover:bg-[#f7ede0] transition-colors">
+                                    <span>👤</span> Profil Saya
                                 </a>
                             </div>
-                            <div class="border-t border-gray-50 py-2 bg-[#f7ede0]">
-                                <a href="{{ url_for('logout') }}" class="flex items-center gap-3 px-5 py-3 text-sm text-red-600 font-black hover:bg-red-50 transition-colors uppercase tracking-widest">
-                                    <span class="text-lg">🚪</span> Logout
+                            <div class="border-t border-gray-50 py-1 bg-[#f7ede0]">
+                                <a href="{{ url_for('logout') }}" class="flex items-center gap-2.5 px-4 py-2 text-xs sm:text-sm text-red-600 font-black hover:bg-red-50 transition-colors uppercase tracking-widest">
+                                    <span>🚪</span> Logout
                                 </a>
                             </div>
                         </div>
                     </div>
-
-                    {# MOBILE MENU TOGGLE #}
-                    <button id="mobileMenuBtn" class="xl:hidden p-2 text-[#8b6e50] hover:bg-white/40 rounded-xl transition-all">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-                    </button>
-                
                 {% else %}
-                    <div class="space-x-2">
-                        <a href="{{ url_for('login') }}" class="text-[#8b6e50] font-bold text-lg tracking-widest uppercase border-2 border-[#8b6e50] px-5 py-2 rounded-xl hover:bg-[#8b6e50] hover:text-white transition-colors">Masuk</a>
-                        <a href="{{ url_for('register') }}" class="bg-[#8b6e50] text-white border-2 border-[#8b6e50] px-5 py-2 rounded-xl text-lg font-bold uppercase tracking-widest hover:bg-[#6b543c] hover:border-[#6b543c] transition-all shadow-md">Daftar</a>
+                    <!-- Guest Buttons (Compact & Responsive) -->
+                    <div class="flex items-center space-x-1 sm:space-x-2">
+                        <a href="{{ url_for('login') }}" class="text-[#8b6e50] font-bold text-xs sm:text-sm tracking-wider uppercase border border-[#8b6e50] sm:border-2 px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl hover:bg-[#8b6e50] hover:text-white transition-colors">Masuk</a>
+                        <a href="{{ url_for('register') }}" class="bg-[#8b6e50] text-white border border-[#8b6e50] sm:border-2 px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider hover:bg-[#6b543c] hover:border-[#6b543c] transition-all shadow-sm">Daftar</a>
                     </div>
                 {% endif %}
+
+                {# MOBILE MENU TOGGLE #}
+                <button id="mobileMenuBtn" class="lg:hidden p-2 text-[#8b6e50] hover:bg-white/40 rounded-xl transition-all">
+                    <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
             </div>
         </div>
 
         {# MOBILE NAVIGATION (HIDDEN BY DEFAULT) #}
-        <div id="mobileMenu" class="hidden xl:hidden mt-4 p-4 bg-white/60 rounded-3xl backdrop-blur-xl border border-white/60 animate-fade-in shadow-xl">
+        <div id="mobileMenu" class="hidden lg:hidden mt-4 p-4 bg-white/60 rounded-3xl backdrop-blur-xl border border-white/60 animate-fade-in shadow-xl">
             <div class="flex flex-col space-y-2">
-                <a href="{{ url_for('education_event') }}" class="p-4 text-[#8b6e50] font-bold text-base rounded-2xl transition-all {% if request.endpoint == 'education_event' %}bg-white text-[#6b543c] shadow-sm{% else %}hover:bg-white/60{% endif %}">Edukasi & Event</a>
-                <a href="{{ url_for('counseling') }}" class="p-4 text-[#8b6e50] font-bold text-base rounded-2xl transition-all {% if request.endpoint == 'counseling' %}bg-white text-[#6b543c] shadow-sm{% else %}hover:bg-white/60{% endif %}">Konseling</a>
-                <a href="{{ url_for('forum') }}" class="p-4 text-[#8b6e50] font-bold text-base rounded-2xl transition-all {% if request.endpoint == 'forum' %}bg-white text-[#6b543c] shadow-sm{% else %}hover:bg-white/60{% endif %}">Forum Diskusi</a>
-                <a href="{{ url_for('about') }}" class="p-4 text-[#8b6e50] font-bold text-base rounded-2xl transition-all flex justify-between items-center {% if request.endpoint in ['about', 'achievements', 'innovations'] %}bg-white/60 text-[#6b543c]{% else %}hover:bg-white/60{% endif %}" onclick="event.preventDefault(); document.getElementById('aboutSubMenu').classList.toggle('hidden');">
+                <a href="{{ url_for('education_event') }}" class="p-3 text-[#8b6e50] font-bold text-sm sm:text-base rounded-2xl transition-all {% if request.endpoint == 'education_event' %}bg-white text-[#6b543c] shadow-sm{% else %}hover:bg-white/60{% endif %}">Edukasi & Event</a>
+                <a href="{{ url_for('counseling') }}" class="p-3 text-[#8b6e50] font-bold text-sm sm:text-base rounded-2xl transition-all {% if request.endpoint == 'counseling' %}bg-white text-[#6b543c] shadow-sm{% else %}hover:bg-white/60{% endif %}">Konseling</a>
+                <a href="{{ url_for('forum') }}" class="p-3 text-[#8b6e50] font-bold text-sm sm:text-base rounded-2xl transition-all {% if request.endpoint == 'forum' %}bg-white text-[#6b543c] shadow-sm{% else %}hover:bg-white/60{% endif %}">Forum Diskusi</a>
+                <a href="{{ url_for('about') }}" class="p-3 text-[#8b6e50] font-bold text-sm sm:text-base rounded-2xl transition-all flex justify-between items-center {% if request.endpoint in ['about', 'achievements', 'innovations'] %}bg-white/60 text-[#6b543c]{% else %}hover:bg-white/60{% endif %}" onclick="event.preventDefault(); document.getElementById('aboutSubMenu').classList.toggle('hidden');">
                     Tentang Kami
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"/></svg>
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"/></svg>
                 </a>
                 <div id="aboutSubMenu" class="hidden flex flex-col space-y-1 ml-4 border-l-2 border-[#8b6e50]/20 pl-2">
-                    <a href="{{ url_for('about') }}" class="p-3 text-[#8b6e50] font-bold text-sm rounded-2xl transition-all {% if request.endpoint == 'about' %}bg-white text-[#6b543c] shadow-sm{% else %}hover:bg-white/60{% endif %}">Profil PIK-R SERASI</a>
-                    <a href="{{ url_for('achievements') }}" class="p-3 text-[#8b6e50] font-bold text-sm rounded-2xl transition-all {% if request.endpoint == 'achievements' %}bg-white text-[#6b543c] shadow-sm{% else %}hover:bg-white/60{% endif %}">Prestasi</a>
-                    <a href="{{ url_for('innovations') }}" class="p-3 text-[#8b6e50] font-bold text-sm rounded-2xl transition-all {% if request.endpoint == 'innovations' %}bg-white text-[#6b543c] shadow-sm{% else %}hover:bg-white/60{% endif %}">Inovasi & Proker</a>
+                    <a href="{{ url_for('about') }}" class="p-2.5 text-[#8b6e50] font-bold text-xs sm:text-sm rounded-2xl transition-all {% if request.endpoint == 'about' %}bg-white text-[#6b543c] shadow-sm{% else %}hover:bg-white/60{% endif %}">Profil PIK-R SERASI</a>
+                    <a href="{{ url_for('achievements') }}" class="p-2.5 text-[#8b6e50] font-bold text-xs sm:text-sm rounded-2xl transition-all {% if request.endpoint == 'achievements' %}bg-white text-[#6b543c] shadow-sm{% else %}hover:bg-white/60{% endif %}">Prestasi</a>
+                    <a href="{{ url_for('innovations') }}" class="p-2.5 text-[#8b6e50] font-bold text-xs sm:text-sm rounded-2xl transition-all {% if request.endpoint == 'innovations' %}bg-white text-[#6b543c] shadow-sm{% else %}hover:bg-white/60{% endif %}">Inovasi & Proker</a>
                 </div>
             </div>
+        </div>
+    </nav>>
         </div>
     </nav>
 
@@ -391,14 +399,11 @@
                         Ruang aman untuk ceritamu tanpa takut dihakimi. Temukan edukasi sehat, solusi, dan konseling sebaya secara privat di sini.
                     </p>
                     <div class="flex items-center gap-3">
-                        <a href="#" class="w-10 h-10 rounded-full bg-[#f7ede0] flex items-center justify-center text-[#8b6e50] hover:bg-[#d8c5a3] hover:text-white transition-colors">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
-                        </a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-[#f7ede0] flex items-center justify-center text-[#8b6e50] hover:bg-[#d8c5a3] hover:text-white transition-colors">
+                        <a href="https://www.instagram.com/pikr_sempur?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-[#f7ede0] flex items-center justify-center text-[#8b6e50] hover:bg-[#d8c5a3] hover:text-white transition-colors" title="Instagram PIK-R Sempur">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
                         </a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-[#f7ede0] flex items-center justify-center text-[#8b6e50] hover:bg-[#d8c5a3] hover:text-white transition-colors">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
+                        <a href="https://www.tiktok.com/@pikr.serasi?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-[#f7ede0] flex items-center justify-center text-[#8b6e50] hover:bg-[#d8c5a3] hover:text-white transition-colors" title="TikTok PIK-R Serasi">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.17-2.89-.74-3.94-1.74a7.99 7.99 0 0 1-1.37-1.92v6.2c.03 2.25-.93 4.54-2.68 5.96a8.21 8.21 0 0 1-8.39.95c-2.41-1.12-4.08-3.63-4.07-6.32.03-3.27 2.4-6.19 5.63-6.61 1.05-.14 2.13-.04 3.14.28V10.9a4.19 4.19 0 0 0-2.31-.56 4.24 4.24 0 0 0-4.09 4.5 4.24 4.24 0 0 0 4.18 4.24 4.24 4.24 0 0 0 4.24-4.22c.04-4.96.01-9.92.02-14.88z"/></svg>
                         </a>
                     </div>
                 </div>
@@ -448,47 +453,63 @@
     </footer>
 
     <script>
-    {% if session.get('user_id') %}
+        // Global mobile menu functionality (works for both guests and authenticated users)
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const mobileMenu = document.getElementById('mobileMenu');
         
-        let lastNotifCount = -1;
-
-        if (mobileMenuBtn) {
-            mobileMenuBtn.addEventListener('click', () => {
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
                 mobileMenu.classList.toggle('hidden');
             });
         }
 
-        if (userMenuBtn) {
-            userMenuBtn.addEventListener('click', () => {
-                userDropdown.classList.toggle('hidden');
-                notifDropdown.classList.add('hidden');
-                mobileMenu.classList.add('hidden');
-            });
-        }
-
-        if (notifButton) {
-            notifButton.addEventListener('click', () => {
-                notifDropdown.classList.toggle('hidden');
-                userDropdown.classList.add('hidden');
-                mobileMenu.classList.add('hidden');
-            });
-        }
-
         window.addEventListener('click', function(e) {
-            if (userMenuBtn && !userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
-                userDropdown.classList.add('hidden');
-            }
-            if (notifButton && !notifButton.contains(e.target) && !notifDropdown.contains(e.target)) {
-                notifDropdown.classList.add('hidden');
-            }
-            if (mobileMenuBtn && !mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+            if (mobileMenu && mobileMenuBtn && !mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
                 mobileMenu.classList.add('hidden');
             }
         });
 
+    {% if session.get('user_id') %}
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const userDropdown = document.getElementById('userDropdown');
+        const notifButton = document.getElementById('notifButton');
+        const notifDropdown = document.getElementById('notifDropdown');
+        const notifBadge = document.getElementById('notifBadge');
+        const notifList = document.getElementById('notifList');
+        const toastContainer = document.getElementById('toastContainer');
+        
+        let lastNotifCount = -1;
+
+        if (userMenuBtn && userDropdown) {
+            userMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                userDropdown.classList.toggle('hidden');
+                if (notifDropdown) notifDropdown.classList.add('hidden');
+                if (mobileMenu) mobileMenu.classList.add('hidden');
+            });
+        }
+
+        if (notifButton && notifDropdown) {
+            notifButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                notifDropdown.classList.toggle('hidden');
+                if (userDropdown) userDropdown.classList.add('hidden');
+                if (mobileMenu) mobileMenu.classList.add('hidden');
+            });
+        }
+
+        window.addEventListener('click', function(e) {
+            if (userMenuBtn && userDropdown && !userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                userDropdown.classList.add('hidden');
+            }
+            if (notifButton && notifDropdown && !notifButton.contains(e.target) && !notifDropdown.contains(e.target)) {
+                notifDropdown.classList.add('hidden');
+            }
+        });
+
         function showToast(message) {
+            if (!toastContainer) return;
             const toast = document.createElement('div');
             toast.className = 'bg-white border-l-4 border-[#d8c5a3] shadow-2xl rounded-lg p-4 mb-2 flex items-center justify-between transform transition-all duration-500 translate-x-full opacity-0 max-w-sm';
             toast.innerHTML = `
@@ -528,22 +549,26 @@
                     }
                     lastNotifCount = unread.length;
 
-                    if (unread.length > 0) {
-                        notifBadge.innerText = unread.length > 9 ? '9+' : unread.length;
-                        notifBadge.classList.remove('hidden');
-                    } else {
-                        notifBadge.classList.add('hidden');
+                    if (notifBadge) {
+                        if (unread.length > 0) {
+                            notifBadge.innerText = unread.length > 9 ? '9+' : unread.length;
+                            notifBadge.classList.remove('hidden');
+                        } else {
+                            notifBadge.classList.add('hidden');
+                        }
                     }
 
-                    if (data.length === 0) {
-                        notifList.innerHTML = '<div class="p-4 text-center text-xs text-gray-400">Belum ada notifikasi baru 🎉</div>';
-                    } else {
-                        notifList.innerHTML = data.map(n => `
-                            <div class="p-3 border-b border-gray-50 hover:bg-[#f7ede0] transition cursor-pointer ${!n.is_read ? 'bg-[#f7ede0]/80 border-l-4 border-l-[#d8c5a3]' : ''}" onclick="readNotification(${n.id}, '${n.link}')">
-                                <p class="text-xs text-gray-800 ${!n.is_read ? 'font-bold' : ''}">${n.message}</p>
-                                <span class="text-[10px] text-gray-400 mt-1 block">${n.timestamp}</span>
-                            </div>
-                        `).join('');
+                    if (notifList) {
+                        if (data.length === 0) {
+                            notifList.innerHTML = '<div class="p-4 text-center text-xs text-gray-400">Belum ada notifikasi baru 🎉</div>';
+                        } else {
+                            notifList.innerHTML = data.map(n => `
+                                <div class="p-3 border-b border-gray-50 hover:bg-[#f7ede0] transition cursor-pointer ${!n.is_read ? 'bg-[#f7ede0]/80 border-l-4 border-l-[#d8c5a3]' : ''}" onclick="readNotification(${n.id}, '${n.link}')">
+                                    <p class="text-xs text-gray-800 ${!n.is_read ? 'font-bold' : ''}">${n.message}</p>
+                                    <span class="text-[10px] text-gray-400 mt-1 block">${n.timestamp}</span>
+                                </div>
+                            `).join('');
+                        }
                     }
                 })
                 .catch(err => console.error('Error fetching notifications:', err));
@@ -560,7 +585,7 @@
             fetch('/api/notifications/read_all', { method: 'POST' })
                 .then(() => {
                     fetchNotifications();
-                    notifDropdown.classList.add('hidden');
+                    if (notifDropdown) notifDropdown.classList.add('hidden');
                 });
         }
 
@@ -569,7 +594,7 @@
                 fetch('/api/notifications/clear', { method: 'POST' })
                     .then(() => {
                         fetchNotifications();
-                        notifDropdown.classList.add('hidden');
+                        if (notifDropdown) notifDropdown.classList.add('hidden');
                     });
             }
         }

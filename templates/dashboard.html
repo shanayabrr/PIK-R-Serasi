@@ -199,13 +199,13 @@
                 {% endif %}
             </p>
         </div>
-        <div class="flex items-center gap-3 bg-white p-2 rounded-2xl shadow-sm border border-slate-100">
+        <a href="{{ url_for('profile') }}" class="flex items-center gap-3 bg-white p-2 rounded-2xl shadow-sm border border-slate-100 hover:scale-105 hover:shadow-md transition-all cursor-pointer">
             <div class="w-12 h-12 bg-pink-50 rounded-xl flex items-center justify-center text-xl">✨</div>
             <div class="pr-4">
                 <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Status Akun</p>
                 <p class="text-xs font-black text-slate-800 uppercase tracking-tighter">{{ session['role'].replace('_', ' ') }}</p>
             </div>
-        </div>
+        </a>
     </div>
 
     <!-- EMERGENCY ALERT SECTION (VITAL) -->
@@ -247,41 +247,41 @@
 
     <!-- STATS GRID -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        <div class="premium-card p-6 rounded-[2rem] relative overflow-hidden group bg-white shadow-sm border border-slate-100">
+        <a href="/admin/users" class="block premium-card p-6 rounded-[2rem] relative overflow-hidden group bg-white shadow-sm border border-slate-100 hover:scale-105 hover:shadow-md transition-all cursor-pointer">
             <div class="z-10 relative">
                 <p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em]">Total Pengguna</p>
                 <h3 class="text-4xl font-black text-slate-800 mt-2 tracking-tighter">{{ total_users }}</h3>
             </div>
-            <div class="absolute right-4 bottom-4 text-5xl opacity-10">👥</div>
-            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-blue-50 rounded-full opacity-30"></div>
-        </div>
+            <div class="absolute right-4 bottom-4 text-5xl opacity-10 group-hover:scale-110 transition-transform">👥</div>
+            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-blue-50 rounded-full opacity-30 group-hover:scale-110 transition-transform"></div>
+        </a>
 
-        <div class="premium-card p-6 rounded-[2rem] relative overflow-hidden group bg-white shadow-sm border border-slate-100">
+        <a href="/admin/users" class="block premium-card p-6 rounded-[2rem] relative overflow-hidden group bg-white shadow-sm border border-slate-100 hover:scale-105 hover:shadow-md transition-all cursor-pointer">
             <div class="z-10 relative">
                 <p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em]">Konselor Aktif</p>
                 <h3 class="text-4xl font-black text-slate-800 mt-2 tracking-tighter">{{ total_konselor }}</h3>
             </div>
-            <div class="absolute right-4 bottom-4 text-5xl opacity-10">🤝</div>
-            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-emerald-50 rounded-full opacity-30"></div>
-        </div>
+            <div class="absolute right-4 bottom-4 text-5xl opacity-10 group-hover:scale-110 transition-transform">🤝</div>
+            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-emerald-50 rounded-full opacity-30 group-hover:scale-110 transition-transform"></div>
+        </a>
 
-        <div class="premium-card p-6 rounded-[2rem] relative overflow-hidden group bg-white shadow-sm border border-slate-100">
+        <a href="{{ url_for('education') }}" class="block premium-card p-6 rounded-[2rem] relative overflow-hidden group bg-white shadow-sm border border-slate-100 hover:scale-105 hover:shadow-md transition-all cursor-pointer">
             <div class="z-10 relative">
                 <p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em]">Materi Edukasi</p>
                 <h3 class="text-4xl font-black text-slate-800 mt-2 tracking-tighter">{{ total_articles }}</h3>
             </div>
-            <div class="absolute right-4 bottom-4 text-5xl opacity-10">📚</div>
-            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-amber-50 rounded-full opacity-30"></div>
-        </div>
+            <div class="absolute right-4 bottom-4 text-5xl opacity-10 group-hover:scale-110 transition-transform">📚</div>
+            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-amber-50 rounded-full opacity-30 group-hover:scale-110 transition-transform"></div>
+        </a>
 
-        <div class="premium-card p-6 rounded-[2rem] relative overflow-hidden group bg-white shadow-sm border border-slate-100">
+        <a href="{{ url_for('counseling') }}" class="block premium-card p-6 rounded-[2rem] relative overflow-hidden group bg-white shadow-sm border border-slate-100 hover:scale-105 hover:shadow-md transition-all cursor-pointer">
             <div class="z-10 relative">
                 <p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em]">Sesi Berjalan</p>
                 <h3 class="text-4xl font-black text-slate-800 mt-2 tracking-tighter">{{ chart_data[1] }}</h3>
             </div>
-            <div class="absolute right-4 bottom-4 text-5xl opacity-10">✅</div>
-            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-pink-50 rounded-full opacity-30"></div>
-        </div>
+            <div class="absolute right-4 bottom-4 text-5xl opacity-10 group-hover:scale-110 transition-transform">✅</div>
+            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-pink-50 rounded-full opacity-30 group-hover:scale-110 transition-transform"></div>
+        </a>
     </div>
 
     <!-- MAIN CONTENT GRID -->
